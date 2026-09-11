@@ -1,0 +1,30 @@
+# PHP / Composer
+/vendor/
+composer.lock
+
+# Local environment / secrets
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+php_lint_log.txt
+
+# Uploaded content / generated files
+uploads/
+uploaded/
+cache/
+*.cache
+
+# XAMPP / local runtime
+tmp/
+temp/
+
+# Git
+.git/

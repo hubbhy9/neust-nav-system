@@ -1,0 +1,1328 @@
+:root {
+  --primary-color: #1d3698;
+  --accent-color: #f8f9fa;
+}
+
+body.map-body {
+  font-family: "Inter", sans-serif;
+  background-color: #f4f7f6;
+  overflow-x: hidden;
+}
+
+.map-wrapper {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.fixed-canvas {
+  width: 100%;
+  max-width: 1000px;
+  aspect-ratio: 1000 / 800;
+  min-height: 300px;
+  position: relative;
+  background-color: #eef2f5;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Color Palette */
+.bg-room {
+  background-color: #0dcaf0;
+}
+
+.bg-help {
+  background-color: #7bff74;
+}
+
+.bg-clinic {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+}
+
+.bg-male {
+  background-color: #5ac1f2;
+}
+
+.bg-female {
+  background-color: #f576ab;
+}
+
+.bg-gym {
+  background-color: #434243;
+}
+
+/* Custom Stairs Style with Tread Pattern */
+.bg-stairs {
+  background-color: #b28859;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.25) 0px,
+    rgba(0, 0, 0, 0.25) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Vertical stairs pattern for tall narrow staircases */
+.stairs-educ1,
+.stairs-educ2,
+.stairs-lab,
+.stairs-lhs {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.25) 0px,
+    rgba(0, 0, 0, 0.25) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}
+
+/* Base Stair Styling */
+.bg-stairs {
+  background-color: #b28859 !important;
+  position: absolute;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+/* 1. Horizontal Staircases */
+.stairs-cict1,
+.stairs-cict2,
+.stairs-cmbt1,
+.stairs-cmbt2,
+.stairs-cmbtmid {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.35) 0px,
+    rgba(0, 0, 0, 0.35) 2px,
+    transparent 2px,
+    transparent 7px
+  ) !important;
+}
+
+/* Center vertical dividing line for horizontal stairs */
+/* Center vertical dividing line for horizontal stairs (1F, 2F, & 3F) */
+.stairs-cict1,
+.stairs-cict2,
+.stairs-cmbt1,
+.stairs-cmbt2,
+.stairs-cmbtmid,
+.stairs-cict21,
+.stairs-cict22,
+.stairs-cmbt21,
+.stairs-cmbt22,
+.stairs-cmbt2mid,
+.stairs-cmbt31,
+.stairs-cmbt32 {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.35) 0px,
+    rgba(0, 0, 0, 0.35) 2px,
+    transparent 2px,
+    transparent 7px
+  ) !important;
+}
+
+.stairs-cict1::before,
+.stairs-cict2::before,
+.stairs-cmbt1::before,
+.stairs-cmbt2::before,
+.stairs-cmbtmid::before,
+.stairs-cict21::before,
+.stairs-cict22::before,
+.stairs-cmbt21::before,
+.stairs-cmbt22::before,
+.stairs-cmbt2mid::before,
+.stairs-cmbt31::before,
+.stairs-cmbt32::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* 2. Vertical Staircases */
+.stairs-educ1,
+.stairs-educ2,
+.stairs-lhs {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.35) 0px,
+    rgba(0, 0, 0, 0.35) 2px,
+    transparent 2px,
+    transparent 7px
+  ) !important;
+}
+
+/* Center horizontal dividing line for vertical stairs */
+/* Center horizontal dividing line for vertical stairs (1F & 2F) */
+.stairs-educ1,
+.stairs-educ2,
+.stairs-lab,
+.stairs-lhs,
+.stairs-educ21,
+.stairs-educ22,
+.stairs-lab2,
+.stairs-lhs2 {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.35) 0px,
+    rgba(0, 0, 0, 0.35) 2px,
+    transparent 2px,
+    transparent 7px
+  ) !important;
+}
+
+.stairs-educ1::before,
+.stairs-educ2::before,
+.stairs-lhs::before,
+.stairs-lab::before,
+.stairs-educ21::before,
+.stairs-educ22::before,
+.stairs-lhs2::before,
+.stairs-lab2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.bg-offices {
+  background-color: #ffc107;
+  color: #212529 !important;
+}
+
+.bg-facility {
+  background-color: #dc3545;
+}
+
+/* Room Styling */
+.bordering {
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+  user-select: none;
+  z-index: 2;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.bordering:hover {
+  border-color: rgba(255, 0, 85, 0.75) !important;
+  box-shadow: 0 8px 18px rgba(255, 0, 85, 0.14);
+  transform: translateY(-1px);
+}
+
+.bordering.selected-room {
+  border: 2px solid #ff0055 !important;
+  outline: 3px solid rgba(255, 0, 85, 0.9) !important;
+  box-shadow: 0 0 18px rgba(255, 0, 85, 0.75);
+  z-index: 12;
+}
+
+/* Building-specific hover styling for floor 2 */
+#floor2-layer .building-cict.bordering:hover,
+#floor2-layer .building-coed.bordering:hover,
+#floor2-layer .building-cmbt.bordering:hover,
+#floor2-layer .building-lhs.bordering:hover {
+  outline: 2px solid #000;
+  z-index: 10 !important;
+}
+
+#floor2-layer.hovered-building-cict
+  .building-cict.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.hovered-building-coed
+  .building-coed.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.hovered-building-cmbt
+  .building-cmbt.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.hovered-building-lhs
+  .building-lhs.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.active-building-cict
+  .building-cict.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.active-building-coed
+  .building-coed.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.active-building-cmbt
+  .building-cmbt.bordering:not(.bg-stairs, .filler, .filler2, .filler3),
+#floor2-layer.active-building-lhs
+  .building-lhs.bordering:not(.bg-stairs, .filler, .filler2, .filler3) {
+  outline: 2px solid #000;
+  z-index: 10 !important;
+}
+
+/* Building-specific hover & active styling for Floor 3 */
+#floor3-layer .building-cmbt.bordering:hover {
+  outline: 2px solid #000;
+  z-index: 10 !important;
+}
+
+#floor3-layer.hovered-building-cmbt
+  .building-cmbt.bordering:not(.bg-stairs, .filler, .filler2),
+#floor3-layer.active-building-cmbt
+  .building-cmbt.bordering:not(.bg-stairs, .filler, .filler2) {
+  outline: 2px solid #000;
+  z-index: 10 !important;
+}
+
+/* Selected Room Styling for Floor 3 */
+#floor3-layer .building-cmbt.bordering.selected-room,
+#floor3-layer .bordering.selected-room {
+  outline: 3px solid #ff0055 !important;
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+  z-index: 15 !important;
+}
+
+/* Active Navigation Route Line on 3rd Floor */
+#edge-layer-3f .edge.active {
+  stroke: #006aff !important;
+  stroke-width: 10;
+  filter: drop-shadow(0 0 18px rgba(210, 0, 0, 0.7));
+}
+
+#floor2-layer.active-building-cict .building-coed,
+#floor2-layer.active-building-cict .building-cmbt,
+#floor2-layer.active-building-cict .building-lhs,
+#floor2-layer.active-building-coed .building-cict,
+#floor2-layer.active-building-coed .building-cmbt,
+#floor2-layer.active-building-coed .building-lhs,
+#floor2-layer.active-building-cmbt .building-cict,
+#floor2-layer.active-building-cmbt .building-coed,
+#floor2-layer.active-building-cmbt .building-lhs,
+#floor2-layer.active-building-lhs .building-cict,
+#floor2-layer.active-building-lhs .building-coed,
+#floor2-layer.active-building-lhs .building-cmbt,
+#floor2-layer.active-building-cict #edge-layer-2f .edge:not(.building-cict),
+#floor2-layer.active-building-coed #edge-layer-2f .edge:not(.building-coed),
+#floor2-layer.active-building-cmbt #edge-layer-2f .edge:not(.building-cmbt),
+#floor2-layer.active-building-lhs #edge-layer-2f .edge:not(.building-lhs),
+#floor2-layer.active-building-cict
+  #nav-overlay-2f
+  .waypoint:not(.building-cict),
+#floor2-layer.active-building-coed
+  #nav-overlay-2f
+  .waypoint:not(.building-coed),
+#floor2-layer.active-building-cmbt
+  #nav-overlay-2f
+  .waypoint:not(.building-cmbt),
+#floor2-layer.active-building-lhs #nav-overlay-2f .waypoint:not(.building-lhs) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+body.floor2-exclusive .map-wrapper > .border > svg.map-lines-overlay {
+  display: none !important;
+}
+
+body.floor2-exclusive .map-wrapper > .border > .bordering {
+  display: none !important;
+}
+
+body.floor2-exclusive #nav-overlay {
+  display: none !important;
+}
+
+body.floor2-exclusive #floor2-layer {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* DYNAMIC CLICK STYLING FOR ROOM DIVS */
+#floor2-layer .building-cict.bordering.selected-room,
+#floor2-layer .building-coed.bordering.selected-room,
+#floor2-layer .building-cmbt.bordering.selected-room,
+#floor2-layer .building-lhs.bordering.selected-room,
+#floor2-layer .bordering.selected-room {
+  outline: 3px solid #ff0055 !important;
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+  z-index: 15 !important;
+}
+
+/* SVG Overlay Layer */
+.map-lines-overlay,
+#nav-overlay,
+#nav-overlay-2f,
+#nav-overlay-3f {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.map-lines-overlay {
+  pointer-events: none;
+  z-index: 1;
+}
+
+#nav-overlay,
+#nav-overlay-2f,
+#nav-overlay-3f {
+  z-index: 20;
+  pointer-events: none;
+}
+
+#nav-overlay .waypoint,
+#nav-overlay-2f .waypoint,
+#nav-overlay-3f .waypoint {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.bordering[data-target] {
+  cursor: pointer;
+}
+
+/* Wall Stroke Properties */
+.outer-wall {
+  fill: none;
+  stroke: #1a1a1a;
+  stroke-width: 3px;
+  stroke-linejoin: square;
+  stroke-linecap: butt;
+  vector-effect: non-scaling-stroke;
+}
+
+.inner-wall {
+  fill: none;
+  stroke: #495057;
+  stroke-width: 2px;
+  stroke-linejoin: square;
+  stroke-linecap: butt;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Navigation Edges & Waypoints */
+.edge {
+  stroke: rgba(40, 100, 230, 0);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: 0.25s;
+  fill: none;
+}
+
+#edge-layer-2f .edge.active {
+  stroke: #d20000 !important;
+  stroke-width: 10;
+  filter: drop-shadow(0 0 18px rgba(210, 0, 0, 0.7));
+}
+
+.edge.active {
+  stroke: #00d25a;
+  stroke-width: 10;
+  filter: drop-shadow(0 0 18px rgba(0, 210, 90, 0.5));
+  transition:
+    stroke 0.25s,
+    stroke-width 0.25s,
+    filter 0.25s;
+}
+
+/* Alternative Path Styling (Gray & Broken/Dashed Line) */
+.edge.alt-active {
+  stroke: #8d99ae;
+  stroke-width: 6;
+  stroke-dasharray: 8, 8;
+  filter: drop-shadow(0 0 12px rgba(141, 153, 174, 0.4));
+  z-index: 1;
+}
+
+.waypoint {
+  display: none !important;
+}
+
+.floor-layer {
+  position: absolute;
+  inset: 0;
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.floor-layer.hidden {
+  transform: translateY(105%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.floor-layer.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#wp-reg-win,
+#wp-cashier-win {
+  display: inline !important;
+}
+
+.route-visible .waypoint.start,
+.route-visible .waypoint.end,
+.route-visible .waypoint.alt-end,
+.route-visible .waypoint.selected-waypoint {
+  display: inline !important;
+}
+
+.waypoint.on-path,
+.waypoint.junction {
+  display: none !important;
+}
+
+.waypoint.room circle {
+  fill: #2d6cdf;
+  stroke: white;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: 0.2s;
+  paint-order: stroke fill;
+}
+
+/* DYNAMIC CLICK STYLING FOR SVG WAYPOINTS */
+.waypoint.selected-waypoint circle {
+  fill: #ff0055 !important;
+  r: 16 !important;
+  stroke: #ffffff !important;
+  stroke-width: 3 !important;
+}
+
+.waypoint.room text {
+  fill: #111;
+  font-size: 10px;
+  font-weight: bold;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.waypoint.start circle {
+  fill: #00d25a !important;
+  filter: drop-shadow(0 0 12px rgba(0, 210, 90, 0.7));
+  transition: filter 0.25s ease;
+}
+
+.waypoint.end circle {
+  fill: #dc3545 !important;
+  filter: drop-shadow(0 0 12px rgba(220, 53, 69, 0.6));
+  transition: filter 0.25s ease;
+}
+
+.waypoint.alt-end circle {
+  fill: #8d99ae !important;
+  filter: drop-shadow(0 0 10px rgba(141, 153, 174, 0.5));
+  transition: filter 0.25s ease;
+}
+
+.tracking-wider {
+  letter-spacing: 0.05em;
+}
+
+.form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: none;
+}
+
+.input-group-text {
+  color: #6c757d;
+}
+
+.btn-primary {
+  box-shadow: 0 4px 6px rgba(13, 110, 253, 0.15);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  transition: 0.2s;
+}
+
+/* Absolute Room Layout Coordinates */
+.cict-faculty {
+  width: 11%;
+  height: 9.5%;
+  top: 7.3%;
+  right: 10.58%;
+}
+
+.clinic {
+  width: 9.75%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 21.58%;
+}
+
+.stairs-cict1 {
+  width: 6.45%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 31.33%;
+}
+
+.info-cict {
+  width: 3.4%;
+  height: 3.6%;
+  top: 10.3%;
+  right: 34.33%;
+}
+
+.conference-room {
+  width: 10.51%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 37.75%;
+}
+
+.director-office {
+  width: 11.51%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 47.6%;
+}
+
+.rm113 {
+  width: 7.19%;
+  height: 6.6%;
+  top: 7.3%;
+  right: 58.77%;
+}
+
+.rm114 {
+  width: 7.19%;
+  height: 6.6%;
+  top: 7.3%;
+  right: 65.96%;
+}
+
+.stairs-cict2 {
+  width: 6.45%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 73.15%;
+}
+
+.supply-room {
+  width: 10.32%;
+  height: 4.7%;
+  top: 7.3%;
+  right: 82.36%;
+}
+
+.stairs-educ1 {
+  width: 6.82%;
+  height: 4.05%;
+  top: 11.88%;
+  right: 85.86%;
+}
+
+.cr-staff {
+  width: 6.82%;
+  height: 3.35%;
+  top: 15.93%;
+  right: 85.86%;
+}
+
+.bsie-stockroom {
+  width: 6.82%;
+  height: 5.02%;
+  top: 19.28%;
+  right: 85.86%;
+}
+
+.gender {
+  width: 6.82%;
+  height: 5.1%;
+  top: 28.26%;
+  right: 85.86%;
+}
+
+.ret {
+  width: 6.82%;
+  height: 5.02%;
+  top: 33.3%;
+  right: 85.86%;
+}
+
+.nstp {
+  width: 6.82%;
+  height: 5.1%;
+  top: 38.3%;
+  right: 85.86%;
+}
+
+.rm110 {
+  width: 6.82%;
+  height: 5.02%;
+  top: 43.4%;
+  right: 85.86%;
+}
+
+.rm109 {
+  width: 6.82%;
+  height: 5.02%;
+  top: 48.34%;
+  right: 85.86%;
+}
+
+.rmmapeh {
+  width: 6.82%;
+  height: 5.02%;
+  top: 53.36%;
+  right: 85.86%;
+}
+
+.bped {
+  width: 6.82%;
+  height: 5.02%;
+  top: 58.38%;
+  right: 85.86%;
+}
+
+.rm108 {
+  width: 6.82%;
+  height: 5.02%;
+  top: 63.4%;
+  right: 85.86%;
+}
+
+.cr-female {
+  width: 6.82%;
+  height: 3.35%;
+  top: 68.42%;
+  right: 85.86%;
+}
+
+.stairs-educ2 {
+  width: 6.82%;
+  height: 4.05%;
+  top: 71.77%;
+  right: 85.86%;
+}
+
+.cr-male {
+  width: 6.19%;
+  height: 3.35%;
+  top: 77.58%;
+  right: 86.43%;
+}
+
+.stairs-cmbt2 {
+  width: 3.9%;
+  height: 5.46%;
+  top: 80.93%;
+  right: 88.7%;
+}
+
+.rm107 {
+  width: 6.83%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 79.6%;
+}
+
+.lhs {
+  width: 7.28%;
+  height: 12.77%;
+  top: 73.62%;
+  right: 72.31%;
+}
+
+.cashier {
+  width: 11.4%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 60.91%;
+}
+
+.stairs-cmbtmid {
+  width: 5.96%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 54.95%;
+}
+
+.info-front {
+  width: 4%;
+  height: 2%;
+  top: 82.628%;
+  right: 54.95%;
+}
+
+.registrar {
+  width: 11.15%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 43.95%;
+}
+
+.osoad {
+  width: 20.58%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 17.29%;
+}
+
+.filler {
+  width: 4%;
+  height: 2.72%;
+  top: 77.58%;
+  right: 10.5%;
+}
+
+.bmgs {
+  width: 2.82%;
+  height: 8.81%;
+  top: 77.6%;
+  right: 14.47%;
+}
+
+.stairs-cmbt1 {
+  width: 4%;
+  height: 6.09%;
+  top: 80.2%;
+  right: 10.5%;
+}
+
+.rm104 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 67.4%;
+  right: 10.5%;
+}
+
+.rm103 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 57.4%;
+  right: 10.5%;
+}
+
+.stairs-lhs {
+  width: 7.4%;
+  height: 9.4%;
+  top: 48%;
+  right: 13.7%;
+}
+
+.rm102 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 38%;
+  right: 10.5%;
+}
+
+.rm101 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 28.26%;
+  right: 10.5%;
+}
+
+.gym {
+  width: 32.5%;
+  height: 28.5%;
+  top: 28.26%;
+  right: 43.95%;
+}
+
+.laboratory {
+  width: 9.4%;
+  height: 12.5%;
+  top: 61.4%;
+  right: 71.31%;
+  background-color: #ffffa7;
+}
+
+.stairs-lab {
+  width: 9.4%;
+  height: 2%;
+  top: 59.4%;
+  right: 71.31%;
+}
+
+.cr-gym-female {
+  width: 5%;
+  height: 8.25%;
+  top: 34.75%;
+  right: 76.45%;
+}
+
+.cr-gym-male {
+  width: 5%;
+  height: 8.25%;
+  top: 43%;
+  right: 76.45%;
+}
+
+.canteen {
+  width: 3%;
+  height: 35%;
+  top: 19%;
+  right: 94%;
+}
+
+.guarde {
+  width: 10%;
+  height: 5%;
+  top: 92.4%;
+  right: 54.95%;
+}
+
+/* FLOOR 2 ROOM LAYOUT COORDINATES */
+#floor2-layer .rm222 {
+  width: 11%;
+  height: 9.5%;
+  top: 7.3%;
+  right: 10.58%;
+}
+
+#floor2-layer .rm221 {
+  width: 9.75%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 21.58%;
+}
+
+#floor2-layer .stairs-cict21 {
+  width: 6.45%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 31.33%;
+}
+
+#floor2-layer .rm220 {
+  width: 8.85%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 37.75%;
+}
+
+#floor2-layer .rm219 {
+  width: 8.85%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 46.6%;
+}
+
+#floor2-layer .rm218 {
+  width: 8.85%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 55.45%;
+}
+
+#floor2-layer .cict-coed-faculty {
+  width: 8.85%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 64.3%;
+}
+
+#floor2-layer .stairs-cict22 {
+  width: 6.45%;
+  height: 6.63%;
+  top: 7.3%;
+  right: 73.15%;
+}
+
+#floor2-layer .filler3 {
+  width: 6.45%;
+  height: 2%;
+  top: 7.3%;
+  right: 73.15%;
+}
+
+#floor2-layer .guidance {
+  width: 6.45%;
+  height: 2%;
+  top: 7.3%;
+  right: 31.33%;
+}
+
+#floor2-layer .coed-office {
+  width: 10.32%;
+  height: 4.7%;
+  top: 7.3%;
+  right: 82.36%;
+}
+
+#floor2-layer .stairs-educ21 {
+  width: 6.82%;
+  height: 4.05%;
+  top: 11.88%;
+  right: 85.86%;
+}
+
+#floor2-layer .ed-tech {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 15.93%;
+  right: 85.86%;
+}
+
+#floor2-layer .rm215 {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 23.9071428571428%;
+  right: 85.86%;
+}
+
+#floor2-layer .rm214 {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 31.8842857142856%;
+  right: 85.86%;
+}
+
+#floor2-layer .rm213 {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 39.8614285714284%;
+  right: 85.86%;
+}
+
+#floor2-layer .rm212 {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 47.8385714285712%;
+  right: 85.86%;
+}
+
+#floor2-layer .field-study {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 55.815714285714%;
+  right: 85.86%;
+}
+
+#floor2-layer .rm211 {
+  width: 6.82%;
+  height: 7.9771428571428%;
+  top: 63.7928571428568%;
+  right: 85.86%;
+}
+
+#floor2-layer .stairs-educ22 {
+  width: 6.82%;
+  height: 4.05%;
+  top: 71.77%;
+  right: 85.86%;
+}
+
+#floor2-layer .filler2 {
+  width: 6.92%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 85.7%;
+  z-index: 1;
+}
+
+#floor2-layer .stairs-cmbt22 {
+  width: 4%;
+  height: 6.09%;
+  top: 80.3%;
+  right: 88.6%;
+  z-index: 3;
+  z-index: 3;
+}
+
+#floor2-layer .rm209 {
+  width: 8.29%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 77.49%;
+}
+
+#floor2-layer .rm208 {
+  width: 8.29%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 69.2%;
+}
+
+#floor2-layer .rm207 {
+  width: 8.29%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 60.91%;
+}
+
+#floor2-layer .stairs-cmbt2mid {
+  width: 5.96%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 54.95%;
+}
+
+#floor2-layer .rm206 {
+  width: 12%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 43.5%;
+}
+
+#floor2-layer .accreditation {
+  width: 13.5%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 17%;
+}
+
+#floor2-layer .anihan {
+  width: 13.5%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 30%;
+}
+
+#floor2-layer .filler {
+  width: 6.82%;
+  height: 8.81%;
+  top: 77.6%;
+  right: 10.5%;
+}
+
+#floor2-layer .stairs-cmbt21 {
+  width: 4%;
+  height: 6.09%;
+  top: 80.3%;
+  right: 10.5%;
+}
+
+#floor2-layer .rm204 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 67.4%;
+  right: 10.5%;
+}
+
+#floor2-layer .rm203 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 57.4%;
+  right: 10.5%;
+}
+
+#floor2-layer .stairs-lhs2 {
+  width: 7.4%;
+  height: 9.4%;
+  top: 48%;
+  right: 13.7%;
+}
+
+#floor2-layer .rm202 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 38%;
+  right: 10.5%;
+}
+
+#floor2-layer .rm201 {
+  width: 10.6%;
+  height: 10.23%;
+  top: 28.26%;
+  right: 10.5%;
+}
+
+#floor2-layer .gym {
+  width: 32.5%;
+  height: 28.5%;
+  top: 28.26%;
+  right: 43.95%;
+}
+
+#floor2-layer .drafting {
+  width: 9.4%;
+  height: 12.5%;
+  top: 61.4%;
+  right: 71.31%;
+  background-color: #ffffa7;
+}
+
+#floor2-layer .stairs-lab2 {
+  width: 9.4%;
+  height: 2%;
+  top: 59.4%;
+  right: 71.31%;
+}
+
+.group-hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.building-floor-toggle {
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #1d3698;
+  border-radius: 20px;
+  padding: 2px 6px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  font-size: 0.75rem;
+  font-weight: bold;
+  transition: opacity 0.25s ease;
+  pointer-events: auto;
+}
+
+.building-floor-toggle .btn-floor {
+  border: none;
+  background: transparent;
+  padding: 2px 8px;
+  border-radius: 12px;
+  color: #495057;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 700;
+  pointer-events: auto;
+}
+
+.building-floor-toggle .btn-floor.active {
+  background-color: #1d3698;
+  color: #ffffff;
+}
+
+#toggle-badge-cict {
+  top: 3%;
+  right: 30%;
+}
+
+#toggle-badge-coed {
+  top: 40%;
+  right: 86%;
+}
+
+#toggle-badge-cmbt {
+  top: 86%;
+  right: 45%;
+}
+
+#toggle-badge-lhs {
+  top: 45%;
+  right: 8%;
+}
+
+#toggle-badge-draft {
+  top: 55%;
+  right: 70%;
+}
+
+/* Building Floor Toggle Pills Overlay */
+.building-toggle-pill {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 3px 6px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  display: none;
+  align-items: center;
+  gap: 4px;
+  z-index: 45;
+  border: 1px solid #ced4da;
+}
+
+.btn-xs {
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+/* Dynamic Visibility Helper Classes */
+#floor2-layer .building-group-hidden,
+#floor3-layer .building-group-hidden,
+.building-f1-hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#building-floor-toggles .building-toggle-pill,
+#building-floor-toggles .building-toggle-pill button {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 1000;
+}
+
+/* FLOOR 3 ROOM LAYOUT COORDINATES (CMBT 3rd Floor) */
+#floor3-layer .rm301 {
+  width: 8.29%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 77.49%;
+}
+
+#floor3-layer .rm303 {
+  width: 8.29%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 69.2%;
+}
+
+#floor3-layer .rm302 {
+  width: 8.29%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 60.91%;
+}
+
+#floor3-layer .library {
+  width: 44.41%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 17%;
+}
+
+#floor3-layer .stairs-cmbt31,
+#floor3-layer .stairs-cmbt32 {
+  width: 4%;
+  height: 6.09%;
+  top: 80.3%;
+  right: 88.6%;
+}
+
+#floor3-layer .stairs-cmbt31,
+#floor3-layer .stairs-cmbt32 {
+  width: 4%;
+  height: 6.09%;
+  top: 80.3%;
+  right: 10.5%;
+}
+
+#floor3-layer .filler2 {
+  width: 6.92%;
+  height: 8.81%;
+  top: 77.58%;
+  right: 85.7%;
+  z-index: 1;
+}
+
+#floor3-layer .filler {
+  width: 6.82%;
+  height: 8.81%;
+  top: 77.6%;
+  right: 10.5%;
+}
+
+
+/* button for debugging */
+/* Toggle class to show all node waypoints */
+body.show-all-nodes .waypoint,
+body.show-all-nodes .waypoint.junction,
+body.show-all-nodes .waypoint.on-path {
+    display: inline !important;
+}

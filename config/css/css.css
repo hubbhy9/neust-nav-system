@@ -1,0 +1,509 @@
+/* ==========================================================================
+   NEUST BRAND THEME
+   Deep royal blue (gear) · golden yellow (gear outline) · orange (seal)
+   ========================================================================== */
+:root {
+  --neust-blue-900: #081847;
+  --neust-blue-800: #0B2270;
+  --neust-blue-700: #14369C; /* primary — logo-accurate royal blue */
+  --neust-blue-600: #1B44B8;
+  --neust-blue-500: #3159D1;
+  --neust-blue-100: #E7ECFB;
+  --neust-blue-50:  #F2F5FD;
+
+  --neust-gold-600: #E6B800;
+  --neust-gold-500: #FFCE00; /* accent — logo-accurate gold */
+  --neust-gold-300: #FFE271;
+  --neust-gold-100: #FFF6D6;
+
+  --neust-orange-600: #DE7E0C;
+  --neust-orange-500: #F89318; /* supporting — logo-accurate orange */
+  --neust-orange-100: #FEEBD3;
+
+  --neust-charcoal-900: #15171F;
+  --neust-charcoal-700: #3A3D4A;
+  --neust-charcoal-500: #6B6F80;
+  --neust-gray-50:  #F6F7FA;
+  --neust-gray-100: #ECEEF3;
+  --neust-gray-200: #DDE1EA;
+
+  --neust-radius-lg: 16px;
+  --neust-radius-md: 12px;
+  --neust-radius-sm: 8px;
+  --neust-font-head: 'Manrope', 'Inter', sans-serif;
+  --neust-font-body: 'Inter', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  font-family: var(--neust-font-body);
+  color: var(--neust-charcoal-900);
+}
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+  font-family: var(--neust-font-head);
+  letter-spacing: -0.01em;
+}
+
+.bg-custom {
+  background: linear-gradient(135deg, var(--neust-blue-700), var(--neust-blue-800)) !important;
+}
+
+/* Thin gold accent line under branded navbars for an official, institutional feel */
+.navbar.bg-custom {
+  border-bottom: 3px solid var(--neust-gold-500);
+}
+
+/* Change the background and text color of the SELECTED tab */
+/* 1. General state for the links and the inner text */
+#pills-tab .nav-link {
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 600;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+/* 2. State when the tab is ACTIVE (Selected) */
+#pills-tab .nav-link.active {
+  background-color: rgba(255, 206, 0, 0.14) !important;
+  color: #fff !important;
+  border-left-color: var(--neust-gold-500);
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+html {
+  overflow-y: scroll;
+}
+
+#pills-tab .nav-link {
+  color: white;
+}
+
+.nav-pills {
+  background: linear-gradient(180deg, var(--neust-blue-800), var(--neust-blue-900));
+  border-bottom: var(--neust-blue-900) solid 1px;
+  box-shadow: black 0px 4px 4px -3px;
+  border-radius: var(--neust-radius-md);
+  padding: 10px;
+}
+
+#pills-tab .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--neust-gold-300);
+  border-left-color: var(--neust-gold-300);
+  border-radius: 6px;
+}
+
+/* Generic buttons — gold accent replaces default Bootstrap blue where used standalone */
+.btn-primary {
+  background-color: var(--neust-blue-700);
+  border-color: var(--neust-blue-700);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--neust-blue-600);
+  border-color: var(--neust-blue-600);
+}
+.btn-outline-light:hover {
+  color: var(--neust-blue-700) !important;
+}
+.badge.bg-primary {
+  background-color: var(--neust-blue-700) !important;
+}
+.text-primary {
+  color: var(--neust-blue-700) !important;
+}
+
+/* ── DataTable responsive overrides ── */
+
+/* Make all tables 100% width of their container */
+.dataTables_wrapper {
+  width: 100%;
+  overflow-x: auto; /* horizontal scroll on very small screens */
+  -webkit-overflow-scrolling: touch;
+}
+
+table.dataTable {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Shrink padding on smaller screens */
+@media (max-width: 991px) {
+  table.dataTable thead th,
+  table.dataTable tbody td {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 575px) {
+  table.dataTable thead th,
+  table.dataTable tbody td {
+    padding: 4px 6px;
+    font-size: 12px;
+    white-space: normal; /* allow text to wrap on tiny screens */
+    word-break: break-word;
+  }
+
+  /* Stack the DataTable controls on mobile */
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    float: none !important;
+    text-align: center !important;
+    margin-bottom: 8px;
+  }
+
+  /* Make buttons smaller on mobile */
+  .btn {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+/* Action column — prevent wrapping on medium+ screens */
+@media (min-width: 576px) {
+  table.dataTable td:last-child {
+    white-space: nowrap;
+  }
+}
+
+/* Card takes full available width */
+.tab-pane .card {
+  width: 100%;
+}
+
+.modals {
+  background: var(--neust-gray-50);
+}
+.update-card {
+  max-width: 450px;
+  width: 100%;
+  border: none;
+  border-top: 4px solid var(--neust-gold-500);
+  border-radius: var(--neust-radius-md);
+}
+
+.loginModal {
+  background-color: var(--neust-gray-50);
+}
+.loginModal .login-card {
+  max-width: 420px;
+  width: 100%;
+  border: none;
+  border-top: 4px solid var(--neust-gold-500);
+  border-radius: 15px;
+}
+.loginModal .form-control {
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+.loginModal .btn-primary {
+  border-radius: 8px;
+  padding: 0.6rem;
+  font-weight: 600;
+  background-color: var(--neust-blue-700); /* Matching NEUST brand theme */
+  border: none;
+}
+.loginModal .btn-primary:hover {
+  background-color: var(--neust-blue-600);
+}
+
+.modalManagement {
+  background-color: var(--neust-gray-100);
+  overflow: hidden;
+}
+.modalManagement .update-card {
+  border: none;
+  border-top: 4px solid var(--neust-gold-500);
+  border-radius: var(--neust-radius-md);
+  width: 100%;
+  max-width: 600px;
+}
+.modalManagement .form-label {
+  font-size: 0.7rem;
+  margin-bottom: 2px;
+}
+.modalManagement .form-control-sm,
+.modalManagement .form-select-sm {
+  border-radius: 6px;
+}
+.modalManagement .status-badge {
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  height: 38px;
+  font-size: 0.85rem;
+}
+
+.map-body {
+  background: #f0f2f5;
+}
+
+#map-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: #fff;
+}
+#floor-map {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ══ OVERLAY ══
+           viewBox matches the SVG: 0 0 1081 1135
+           All cx/cy and x1/y1/x2/y2 use those coordinates.
+
+           HOW TO MOVE A DOT:
+             Find the <g id="wp-xxx"> and change cx,cy on its <circle>.
+             x=0 = left edge, x=1081 = right edge
+             y=0 = top edge,  y=1135 = bottom edge
+             Also update the matching x,y in the NODES JS object.
+
+           HOW TO CALIBRATE (find exact coordinates):
+             Change #debug-rect from display:none → display:block,
+             click anywhere on the map, read x y from console.
+
+           HOW TO SET MANUAL DISTANCES:
+             In EDGES add a 3rd number: ['a','b', 999]
+             High number = Dijkstra avoids this edge.
+             null/omitted = auto Euclidean distance.
+
+           HOW TO AVOID GOING THROUGH BUILDINGS:
+             Insert junction waypoints at corridor bends and
+             split direct edges: A→junction + junction→B.
+        ══ */
+#nav-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* EDGES: blue idle → green active */
+.edge {
+  stroke: rgba(40, 100, 230, 0.5);
+  stroke-width: 3;
+  stroke-linecap: round;
+  pointer-events: none;
+  transition: stroke 0.3s, stroke-width 0.3s;
+}
+.edge.active {
+  stroke: rgba(0, 210, 80, 0.95);
+  stroke-width: 5;
+}
+
+/* WAYPOINTS */
+#nav-overlay .waypoint {
+  pointer-events: all;
+  cursor: pointer;
+}
+.waypoint circle {
+  fill: rgba(180, 180, 180, 0.3);
+  stroke: #888;
+  stroke-width: 1.5;
+  transition: fill 0.2s;
+}
+
+
+/* Room colours */
+#wp-entrance circle {
+  fill: rgba(0, 200, 80, 0.3);
+  stroke: #00c850;
+}
+#wp-registrar circle {
+  fill: rgba(30, 120, 220, 0.3);
+  stroke: #1e78dc;
+}
+#wp-osoad circle {
+  fill: rgba(220, 80, 30, 0.3);
+  stroke: #dc501e;
+}
+#wp-bmgs circle {
+  fill: rgba(160, 30, 220, 0.3);
+  stroke: #a01edc;
+}
+#wp-room104 circle {
+  fill: rgba(220, 170, 20, 0.3);
+  stroke: #dcaa14;
+}
+#wp-room103 circle {
+  fill: rgba(20, 180, 180, 0.3);
+  stroke: #14b4b4;
+}
+#wp-room102 circle {
+  fill: rgba(220, 30, 100, 0.3);
+  stroke: #dc1e64;
+}
+#wp-room101 circle {
+  fill: rgba(100, 180, 60, 0.3);
+  stroke: #64b43c;
+}
+#wp-clinic circle {
+  fill: rgba(255, 120, 200, 0.3);
+  stroke: #ff78c8;
+}
+#wp-cict circle {
+  fill: rgba(80, 160, 220, 0.3);
+  stroke: #50a0dc;
+}
+#wp-infoDesk circle {
+  fill: rgba(255, 165, 0, 0.3);
+  stroke: #ffa500;
+}
+#wp-conf circle {
+  fill: rgba(100, 60, 200, 0.3);
+  stroke: #643cc8;
+}
+#wp-dean circle {
+  fill: rgba(200, 50, 50, 0.3);
+  stroke: #c83232;
+}
+#wp-room113 circle {
+  fill: rgba(60, 160, 120, 0.3);
+  stroke: #3ca078;
+}
+#wp-room114 circle {
+  fill: rgba(220, 140, 20, 0.3);
+  stroke: #dc8c14;
+}
+#wp-stockroom circle {
+  fill: rgba(160, 160, 50, 0.3);
+  stroke: #a0a032;
+}
+#wp-bsiestock circle {
+  fill: rgba(80, 200, 160, 0.3);
+  stroke: #50c8a0;
+}
+#wp-canteen circle {
+  fill: rgba(255, 80, 80, 0.3);
+  stroke: #ff5050;
+}
+#wp-gender circle {
+  fill: rgba(200, 100, 220, 0.3);
+  stroke: #c864dc;
+}
+#wp-nstp circle {
+  fill: rgba(100, 200, 80, 0.3);
+  stroke: #64c850;
+}
+#wp-room110 circle {
+  fill: rgba(220, 170, 20, 0.3);
+  stroke: #dcaa14;
+}
+#wp-room109 circle {
+  fill: rgba(20, 180, 180, 0.3);
+  stroke: #14b4b4;
+}
+#wp-maped circle {
+  fill: rgba(180, 80, 220, 0.3);
+  stroke: #b450dc;
+}
+#wp-bped circle {
+  fill: rgba(60, 120, 220, 0.3);
+  stroke: #3c78dc;
+}
+#wp-room108 circle {
+  fill: rgba(220, 60, 60, 0.3);
+  stroke: #dc3c3c;
+}
+#wp-crFem circle {
+  fill: rgba(255, 120, 180, 0.3);
+  stroke: #ff78b4;
+}
+#wp-cashier circle {
+  fill: rgba(100, 180, 220, 0.3);
+  stroke: #64b4dc;
+}
+#wp-gym circle {
+  fill: rgba(255, 140, 0, 0.3);
+  stroke: #ff8c00;
+}
+
+/* Hover */
+#wp-entrance:hover circle {
+  fill: rgba(0, 200, 80, 0.7);
+}
+#wp-dean:hover circle {
+  fill: rgba(200, 50, 50, 0.7);
+}
+#wp-canteen:hover circle {
+  fill: rgba(255, 80, 80, 0.7);
+}
+#wp-gym:hover circle {
+  fill: rgba(255, 140, 0, 0.7);
+}
+
+/* Path states */
+.waypoint.start circle {
+  fill: rgba(0, 220, 90, 0.9) !important;
+  stroke: #00dc5a !important;
+}
+.waypoint.end circle {
+  fill: rgba(220, 40, 40, 0.9) !important;
+  stroke: #dc2828 !important;
+}
+.waypoint.on-path circle {
+  fill: rgba(255, 165, 0, 0.85) !important;
+  stroke: #ffa500 !important;
+}
+
+/* Labels on dots */
+.waypoint text {
+  font-size: 5px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  fill: #111;
+}
+
+/* Junction dots */
+.waypoint.junction circle {
+  fill: rgba(40, 100, 230, 0.18);
+  stroke: rgba(40, 100, 230, 0.45);
+  stroke-width: 0.8;
+}
+
+/* Controls */
+#controls {
+  max-width: 1100px;
+  margin: 0 auto 10px;
+}
+#msg {
+  max-width: 1100px;
+  margin: 0 auto 8px;
+  font-size: 13px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 4px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.legend-dot-sm {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid;
+  vertical-align: middle;
+  margin-right: 4px;
+}
