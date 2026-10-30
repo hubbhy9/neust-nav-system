@@ -1,0 +1,245 @@
+<app-account-header title="Services"></app-account-header>
+
+<ion-content class="requests-page">
+  <main class="services-shell">
+    <header class="services-heading">
+      <div>
+        <p class="eyebrow">NEUST service directory</p>
+        <h1>Document services</h1>
+        <p>Browse offices, requirements, processing times, and fees.</p>
+      </div>
+      @if (!isLoading) { <span class="count">{{ filteredServices.length }} services</span> }
+    </header>
+
+    @if (authService.currentUser()?.isGuest && requestShortcutToken) {
+      <section class="request-shortcut" aria-label="Requested documents shortcut">
+        <div><strong>Your requested documents</strong><span>Return to the documents in your email request.</span></div>
+        <ion-button fill="outline" size="small" (click)="openRequestShortcut()">Open request</ion-button>
+      </section>
+    }
+
+    <div class="filters">
+      <ion-searchbar aria-label="Search services" placeholder="Search service or office" [value]="searchText" (ionInput)="setSearch($event)"></ion-searchbar>
+      <button id="officeFilterTrigger" class="office-filter" type="button" aria-label="Filter by office" [attr.aria-expanded]="officePopoverOpen" (click)="officePopoverOpen = true">
+        <span class="office-filter-swatch" [style.backgroundColor]="selectedOffice ? officeColor(selectedOffice) : '#64748b'"></span>
+        <span class="office-filter-label">{{ selectedOffice || 'All offices' }}</span>
+        <ion-icon name="chevron-down-outline" aria-hidden="true"></ion-icon>
+      </button>
+      <ion-popover class="office-filter-popover" trigger="officeFilterTrigger" [isOpen]="officePopoverOpen" [showBackdrop]="false" side="bottom" alignment="start" (didDismiss)="officePopoverOpen = false">
+        <ng-template>
+          <div class="office-option-list" role="listbox" aria-label="Filter services by office">
+            <button class="office-option" type="button" role="option" [attr.aria-selected]="selectedOffice === ''" (click)="selectOffice('')">
+              <span class="office-filter-swatch" style="background-color: #64748b"></span>
+              <span>All offices</span>
+              @if (!selectedOffice) { <ion-icon class="office-option-check" name="checkmark-outline" aria-hidden="true"></ion-icon> }
+            </button>
+            @for (office of offices; track office) {
+              <button class="office-option" type="button" role="option" [attr.aria-selected]="selectedOffice === office" (click)="selectOffice(office)">
+                <span class="office-filter-swatch" [style.backgroundColor]="officeColor(office)"></span>
+                <span>{{ office }}</span>
+                @if (selectedOffice === office) { <ion-icon class="office-option-check" name="checkmark-outline" aria-hidden="true"></ion-icon> }
+              </button>
+            }
+          </div>
+        </ng-template>
+      </ion-popover>
+    </div>
+
+    @if (authService.currentUser()?.isGuest) {
+      <section class="guest-request-toolbar" aria-label="Document request selection">
+        <span>{{ selectedRequestIds.size }} selected</span>
+        <div>
+          <ion-button fill="outline" size="small" [disabled]="selectedRequestIds.size === 0" (click)="requestSelected()">Request selected</ion-button>
+          <ion-button fill="clear" color="danger" size="small" [disabled]="selectedRequestIds.size === 0" (click)="deselectAllRequests()">Deselect all</ion-button>
+          <ion-button size="small" (click)="requestAll()">Request all documents</ion-button>
+        </div>
+      </section>
+    }
+    @if (requestSuccessMessage) { <p class="notice success" role="status">{{ requestSuccessMessage }}</p> }
+
+    @if (isLoading) {
+      <section class="state-message" role="status">Loading services...</section>
+    } @else if (errorMessage) {
+      <section class="state-message error" role="alert">
+        <p>{{ errorMessage }}</p>
+        <ion-button fill="outline" (click)="loadServices()">Retry</ion-button>
+      </section>
+    } @else if (filteredServices.length === 0) {
+      <section class="state-message">No services match this search.</section>
+    } @else {
+      @if (totalPages > 1) {
+        <nav class="pagination pagination-top" aria-label="Quick page navigation">
+          <button class="page-control" type="button" aria-label="Previous page" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+          </button>
+          <button class="page-control" type="button" aria-label="Next page" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+          </button>
+        </nav>
+      }
+      <section class="service-list" aria-label="Available document services">
+        @for (service of paginatedServices; track service.process_id) {
+          <article class="service-row" [style.--service-color]="officeColor(service.office_name)">
+            <button class="service-summary" type="button" (click)="toggleDetails(service)" [attr.aria-label]="'View steps for ' + service.title">
+              <span class="service-office-label">{{ service.office_name || 'Campus office' }}</span>
+              <span class="service-card-icon"><ion-icon name="document-text-outline" aria-hidden="true"></ion-icon></span>
+              <span class="service-card-content">
+                <strong class="service-card-title">{{ service.title }}</strong>
+                <span class="service-audience">For {{ service.who_may_avail || 'students, staff, and eligible applicants' }}</span>
+              </span>
+              <span class="service-card-cta">View Steps <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon></span>
+            </button>
+            @if (authService.currentUser()?.isGuest) {
+              <div class="guest-request-actions">
+                <ion-checkbox labelPlacement="end" [checked]="isRequestSelected(service.process_id)" (ionChange)="toggleRequestSelection($event, service.process_id)">Select</ion-checkbox>
+                <ion-button fill="outline" size="small" (click)="requestOne(service.process_id)">Request</ion-button>
+              </div>
+            }
+          </article>
+        }
+      </section>
+      @if (totalPages > 1) {
+        <nav class="pagination pagination-bottom" aria-label="Service pages">
+          <button class="page-control" type="button" aria-label="Previous page" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <ion-icon name="chevron-back-outline" aria-hidden="true"></ion-icon>
+            <span>Previous</span>
+          </button>
+          <div class="page-numbers" aria-label="Choose a page">
+            @for (page of pageNumbers; track page) {
+              <button class="page-number" type="button" [attr.aria-label]="'Page ' + page" [attr.aria-current]="currentPage === page ? 'page' : null" [class.active]="currentPage === page" (click)="goToPage(page)">{{ page }}</button>
+            }
+          </div>
+          <button class="page-control" type="button" aria-label="Next page" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <span>Next</span>
+            <ion-icon name="chevron-forward-outline" aria-hidden="true"></ion-icon>
+          </button>
+        </nav>
+      }
+    }
+  </main>
+</ion-content>
+
+  <ion-modal class="service-detail-modal" [isOpen]="selectedService !== null" [backdropDismiss]="true" (didDismiss)="closeDetails()">
+    <ng-template>
+      @if (selectedService; as service) {
+        <section class="service-modal" role="dialog" aria-modal="true" [attr.aria-labelledby]="'service-modal-title-' + service.process_id">
+        <header class="service-modal-header">
+          <div class="modal-eyebrow">Service details</div>
+          <button class="modal-close" type="button" aria-label="Close service details" (click)="closeDetails()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h2 [id]="'service-modal-title-' + service.process_id">{{ service.title }}</h2>
+        </header>
+
+        <div class="service-modal-body">
+          <section class="service-info-grid" aria-label="Service information">
+            <article class="service-info-box"><span>Office division</span><p>{{ service.office_name || 'Not specified' }}</p></article>
+            <article class="service-info-box"><span>Classification</span><p>{{ service.classification || 'Not specified' }}</p></article>
+            <article class="service-info-box"><span>Type of transaction</span><p>{{ service.transaction_type || 'Not specified' }}</p></article>
+            <article class="service-info-box"><span>Who may avail</span><p>{{ service.who_may_avail || 'Not specified' }}</p></article>
+          </section>
+
+          @if (service.requirements.length === 0 && service.steps.length === 0) {
+            <p class="service-no-details">No requirements or process steps have been published for this service.</p>
+          }
+
+          @if (service.requirements.length) {
+            <section class="requirements-panel">
+              <h3>Requirements &amp; where to secure</h3>
+              <div class="modal-table-scroll">
+                <table class="service-detail-table requirements-table">
+                  <thead><tr><th>Requirements</th><th>Where to secure</th></tr></thead>
+                  <tbody>
+                    @for (requirement of service.requirements; track $index) {
+                      <tr>
+                        <td data-label="Requirement"><span class="requirement-name"><ion-icon name="checkmark-circle" aria-hidden="true"></ion-icon>{{ requirementName(requirement) }}</span></td>
+                        <td data-label="Where to secure">{{ requirementSource(requirement) || 'Not specified' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          }
+
+          @if (service.steps.length) {
+            <section class="process-panel">
+              <h3>Process steps</h3>
+              <div class="modal-table-scroll">
+                <table class="service-detail-table process-table">
+                  <thead><tr><th>Client steps</th><th>Agency actions</th><th>Fees</th><th>Time</th><th>Responsible</th></tr></thead>
+                  <tbody>
+                    @for (step of service.steps; track $index) {
+                      <tr>
+                        <td data-label="Client steps">{{ stepField(step, 'client_step') || '-' }}</td>
+                        <td data-label="Agency actions">{{ stepField(step, 'agency_action') || '-' }}</td>
+                        <td data-label="Fees">{{ stepField(step, 'fees') || 'None' }}</td>
+                        <td data-label="Time">{{ stepField(step, 'processing_time') || '-' }}</td>
+                        <td data-label="Responsible">{{ stepField(step, 'person_responsible') || '-' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          }
+
+          <section class="service-totals" aria-label="Service totals">
+            <article><span><ion-icon name="receipt-outline" aria-hidden="true"></ion-icon> Total fees</span><strong>{{ service.total_fee || 'None' }}</strong></article>
+            <article><span><ion-icon name="time-outline" aria-hidden="true"></ion-icon> Total time</span><strong>{{ service.total_time || 'None' }}</strong></article>
+          </section>
+        </div>
+        </section>
+      }
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal class="document-request-modal" [isOpen]="requestModalOpen" [backdropDismiss]="true" (didDismiss)="closeRequestModal()">
+    <ng-template>
+      <section class="document-request-sheet" role="dialog" aria-modal="true" aria-labelledby="document-request-title">
+        <header>
+          <div class="request-title-group">
+            <span class="request-title-icon" aria-hidden="true"><ion-icon name="document-text-outline"></ion-icon></span>
+            <div><p class="eyebrow">Document request</p><h2 id="document-request-title">Confirm request</h2></div>
+          </div>
+          <button class="modal-close" type="button" aria-label="Close request form" (click)="closeRequestModal()"><ion-icon name="close-outline" aria-hidden="true"></ion-icon></button>
+        </header>
+        <form (ngSubmit)="submitDocumentRequest()">
+          <p class="request-count"><ion-icon name="checkmark-circle-outline" aria-hidden="true"></ion-icon>Requesting {{ requestIdsPending.length }} document{{ requestIdsPending.length === 1 ? '' : 's' }}</p>
+          @if (authService.currentUser()?.isGuest) {
+            <div class="request-name-grid">
+              <ion-item><ion-label position="stacked">First name</ion-label><ion-input required maxlength="80" autocomplete="given-name" [(ngModel)]="requesterFirstName" (ionInput)="filterRequesterName($event, 'first')" name="requesterFirstName"></ion-input></ion-item>
+              <ion-item><ion-label position="stacked">Middle name</ion-label><ion-input maxlength="80" autocomplete="additional-name" [(ngModel)]="requesterMiddleName" (ionInput)="filterRequesterName($event, 'middle')" name="requesterMiddleName"></ion-input></ion-item>
+              <ion-item><ion-label position="stacked">Last name</ion-label><ion-input required maxlength="80" autocomplete="family-name" [(ngModel)]="requesterLastName" (ionInput)="filterRequesterName($event, 'last')" name="requesterLastName"></ion-input></ion-item>
+              <ion-item><ion-label position="stacked">Suffix (optional)</ion-label><ion-input maxlength="20" autocomplete="honorific-suffix" [(ngModel)]="requesterSuffix" (ionInput)="filterRequesterName($event, 'suffix')" name="requesterSuffix"></ion-input></ion-item>
+            </div>
+            <ion-item><ion-label position="stacked">Email address</ion-label><ion-input required type="email" autocomplete="email" [(ngModel)]="requesterEmail" name="requesterEmail"></ion-input></ion-item>
+          }
+          @if (requestError) { <p class="request-error" role="alert">{{ requestError }}</p> }
+          <footer>
+            <ion-button type="button" fill="outline" [disabled]="isSubmittingRequest" (click)="closeRequestModal()">Cancel</ion-button>
+            <ion-button type="submit" [disabled]="isSubmittingRequest">
+              @if (isSubmittingRequest) { <ion-spinner slot="start" name="crescent" aria-hidden="true"></ion-spinner> }
+              {{ isSubmittingRequest ? 'Sending request...' : 'Send request' }}
+            </ion-button>
+          </footer>
+        </form>
+      </section>
+    </ng-template>
+  </ion-modal>
+
+  @if (guestLoginPromptOpen) {
+    <div class="guest-login-backdrop" (click)="closeGuestLoginPrompt()">
+      <section class="guest-login-prompt" role="dialog" aria-modal="true" aria-labelledby="guest-login-title" (click)="$event.stopPropagation()">
+        <div class="guest-login-icon"><ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon></div>
+        <p class="eyebrow">Document details</p>
+        <h2 id="guest-login-title">Please log in to view steps</h2>
+        <p class="guest-login-copy">Sign in to view requirements, process steps, fees, and processing time for this document.</p>
+        @if (guestLoginError) { <p class="guest-login-error" role="alert">{{ guestLoginError }}</p> }
+        <div class="guest-login-actions">
+          <ion-button fill="outline" [disabled]="isSigningOutForLogin" (click)="closeGuestLoginPrompt()">Stay as guest</ion-button>
+          <ion-button [disabled]="isSigningOutForLogin" (click)="continueToLogin()">{{ isSigningOutForLogin ? 'Signing out...' : 'Log in' }}</ion-button>
+        </div>
+      </section>
+    </div>
+  }

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once __DIR__ . '/../../libraries/db.php';
 include __DIR__ . '/../../functions/view.php';
 include __DIR__ . '/../../libraries/include.php';
@@ -7,30 +9,35 @@ if (!isset($db) || !$db instanceof PDO) {
     die('Database connection is not available.');
 }
 
-$Departments = new Departments($db);
-$depts = $Departments->getDepartments(); 
-
-$roles = new roles($db);
-$roles_list = $roles->getroles(); 
+$roles_list = [
+    0 => 'User',
+    1 => 'Admin',
+];
 
 $view = new view($db);
 $record = [];
-if (isset($_GET['user_id'])) {
-    $record = $view->getById((int) $_GET['user_id']);
+if (isset($_GET['id'])) {
+    $record = $view->getById((int) $_GET['id']);
 }
-
-$recordUserId = $record['user_id'] ?? null;
+$recordId = $record['id'] ?? 0;
 $recordRoleId = $record['role_id'] ?? null;
-$recordOfficeId = $record['office_id'] ?? null;
-$recordSupervisorId = $record['supervisor_id'] ?? 'None';
-$recordEmail = $record['email'] ?? 'N/A';
+$currentUserRoleId = (int) ($_SESSION['role_id'] ?? 0);
+$recordRegistrationNumber = $record['registration_number'] ?? 'N/A';
+$recordStudentNumber = $record['student_number'] ?? 'N/A';
 $recordFirstName = $record['first_name'] ?? '';
 $recordMiddleName = $record['middle_name'] ?? '';
 $recordLastName = $record['last_name'] ?? '';
 $recordSuffix = $record['suffix'] ?? '';
+$recordBarangay = $record['barangay'] ?? 'N/A';
+$recordCity = $record['city'] ?? 'N/A';
+$recordProvince = $record['province'] ?? 'N/A';
+$recordBirthday = $record['birthday'] ?? 'N/A';
+$recordSex = $record['sex'] ?? 'N/A';
+$recordMobileNumber = $record['mobile_number'] ?? 'N/A';
+$recordEmail = $record['email'] ?? 'N/A';
+$recordRoleLabel = $recordRoleId !== null && isset($roles_list[$recordRoleId]) ? $roles_list[$recordRoleId] : 'User';
 $recordCreatedAt = $record['created_at'] ?? '-';
 $recordUpdatedAt = $record['updated_at'] ?? '-';
-$recordEmailVerified = (int) ($record['email_verified'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,14 +51,35 @@ $recordEmailVerified = (int) ($record['email_verified'] ?? 0);
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="../../img/neust_logo.png">
     <style>
+        :root {
+            --navy: #173d9f;
+            --navy-dark: #0b2f7a;
+            --gold: #ffce00;
+            --panel: rgba(255, 255, 255, 0.7);
+            --field-bg: rgba(255, 255, 255, 0.85);
+            --field-border: rgba(27, 64, 154, 0.9);
+            --text: #1d2a39;
+            --muted: #5f6b7e;
+            --border-soft: #dfe7f4;
+            --danger: #e75459;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            position: relative;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background:
-                radial-gradient(circle at top left, rgba(20,54,156,0.12), transparent 22%),
-                radial-gradient(circle at 90% 16%, rgba(255,206,0,0.16), transparent 18%),
-                linear-gradient(180deg, #edf5ff 0%, #f7f9fc 42%, #eef3fa 100%);
-            background-attachment: fixed;
+                radial-gradient(circle at top left, rgba(20, 54, 156, 0.12), transparent 22%),
+                radial-gradient(circle at 90% 16%, rgba(255, 206, 0, 0.18), transparent 18%),
+                linear-gradient(180deg, #edf5ff 0%, #f7f9fc 42%, #edf3fb 100%);
             font-family: 'Inter', sans-serif;
+            color: var(--text);
         }
 
         body::before {
@@ -66,161 +94,270 @@ $recordEmailVerified = (int) ($record['email_verified'] ?? 0);
             pointer-events: none;
             z-index: 0;
         }
-        h5, h6 { font-family: 'Manrope', 'Inter', sans-serif; }
-        .profile-card { border: none; border-top: 4px solid #FFCE00; border-radius: 12px; }
-        .bg-custom { background: linear-gradient(135deg, #14369C, #0B2270); }
-        .form-label { font-size: 0.75rem; letter-spacing: 0.5px; color: #6c757d; margin-bottom: 2px; }
-        .form-control-plaintext { 
-            font-weight: 600; 
-            color: #212529; 
-            padding: 0.5rem 0.75rem; 
-            background-color: #F2F5FD; 
-            border-radius: 6px;
-            font-size: 0.9rem;
+
+        .profile-shell {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 860px);
+            margin: 18px auto;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid rgba(23, 61, 159, 0.08);
+            border-radius: 9px;
+            box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
         }
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, var(--navy), var(--navy-dark));
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+
+        .profile-header .brand {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
         }
-        .btn-primary { background-color: #14369C; border-color: #14369C; }
-        .btn-primary:hover { background-color: #1B44B8; border-color: #1B44B8; }
+
+        .profile-header img {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+
+        .profile-body {
+            padding: 8px 14px 16px;
+        }
+
+        .section-header {
+            margin: 4px 4px 0;
+            padding: 6px 4px 5px;
+            border-bottom: 1px solid var(--border-soft);
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: blue;
+        }
+
+        label {
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .cell {
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background: var(--field-bg);
+            border: 1px solid var(--field-border);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .d-flex { display: flex; }
+        .flex-nowrap { flex-wrap: nowrap; }
+        .gap-3 { gap: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            padding: 14px 4px 6px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 36px;
+            border-radius: 7px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            transition: 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-back {
+            background: #f6f8fc;
+            border-color: rgba(23, 61, 159, 0.2);
+            color: #1c2d4a;
+        }
+
+        .btn-edit {
+            background: linear-gradient(180deg, #1a4ed6, #14369c);
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(20, 54, 156, 0.18);
+        }
+
+        .btn-delete {
+            background: #fff;
+            border-color: rgba(231, 84, 89, 0.7);
+            color: #d73a42;
+        }
+
+        .btn:hover {
+            filter: brightness(0.98);
+        }
+
+        @media (max-width: 820px) {
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .d-flex {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .profile-body {
+                padding-inline: 12px;
+            }
+
+            .profile-header {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 
-<body class="d-flex align-items-center justify-content-center vh-100 overflow-hidden">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-11 col-lg-9 col-xl-8">
-                
-                <div class="card profile-card shadow-lg">
-                    <!-- Header -->
-                    <div class="card-header bg-custom text-center py-3">
-                        <img src="../../img/neust_logo.png" alt="NEUST" style="width:26px;height:26px;vertical-align:-6px;margin-right:8px;">
-                        <span class="fw-bold text-white" style="font-size:1.05rem;">
-                            <?= htmlspecialchars(trim(($recordLastName ? $recordLastName . ', ' : '') . $recordFirstName)) ?: 'User Profile' ?>
-                        </span>
-                    </div>
+<body>
+    <div class="profile-shell">
+        <div class="profile-header">
+            <span class="brand">
+                <img src="../../img/neust_logo.png" alt="NEUST">
+                <span>#<?= htmlspecialchars($recordId ?? 0) ?> -</span>
+                <?= htmlspecialchars(trim((($recordLastName ?: 'last name') . ', ' . ($recordFirstName ?: 'first name') . ', ' . ($recordMiddleName ? substr($recordMiddleName, 0, 1) : 'middle initial')))) ?>
+            </span>
+        </div>
 
-                    <div class="card-body p-4 p-md-5">
-                        <div class="row g-4">
-                            <!-- Left Column: Personal -->
-                            <div class="col-md-6 border-end">
-                                <h6 class="fw-bold mb-3 text-dark text-uppercase small"><i class="bi bi-person-lines-fill me-2"></i>General Information</h6>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-uppercase">User ID</label>
-                                    <div class="form-control-plaintext">#<?= htmlspecialchars($recordUserId ?? 'N/A') ?></div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-uppercase">Full Name</label>
-                                    <div class="form-control-plaintext">
-                                        <?= htmlspecialchars(trim($recordFirstName . ' ' . $recordMiddleName . ' ' . $recordLastName . ' ' . $recordSuffix)) ?: 'N/A' ?>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-uppercase">Account Role</label>
-                                    <div class="form-control-plaintext">
-                                        <i class="bi bi-shield-lock me-1"></i> <?= htmlspecialchars($recordRoleId !== null && isset($roles_list[$recordRoleId]) ? $roles_list[$recordRoleId] : 'Standard User') ?>
-                                    </div>
-                                </div>
-
-                                <div class="mb-0">
-                                    <label class="form-label fw-bold text-uppercase">Verification Status</label>
-                                    <div>
-                                        <?php if ($recordEmailVerified === 1): ?>
-                                            <span class="status-badge bg-success bg-opacity-10 text-success fw-bold">
-                                                <i class="bi bi-patch-check-fill"></i> Verified Account
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="status-badge bg-danger bg-opacity-10 text-danger fw-bold">
-                                                <i class="bi bi-exclamation-octagon-fill"></i> Pending Verification
-                                            </span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Column: Employment & Logs -->
-                            <div class="col-md-6">
-                                <h6 class="fw-bold mb-3 text-dark text-uppercase small"><i class="bi bi-building me-2"></i>Organization Details</h6>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-uppercase">Email Address</label>
-                                    <div class="form-control-plaintext text-lowercase">
-                                        <i class="bi bi-envelope me-1"></i> <?= htmlspecialchars($recordEmail) ?>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-uppercase">Department / Office</label>
-                                    <div class="form-control-plaintext">
-                                        <?= htmlspecialchars($recordOfficeId !== null && isset($depts[$recordOfficeId]) ? $depts[$recordOfficeId] : 'Unassigned') ?>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-uppercase">Direct Supervisor ID</label>
-                                    <div class="form-control-plaintext">
-                                        <?= htmlspecialchars($recordSupervisorId) ?>
-                                    </div>
-                                </div>
-
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label fw-bold text-uppercase">Created At</label>
-                                        <div class="small text-muted"><?= htmlspecialchars($recordCreatedAt) ?></div>
-                                    </div>
-                                    <div class="col-6 text-end">
-                                        <label class="form-label fw-bold text-uppercase">Last Update</label>
-                                        <div class="small text-muted"><?= htmlspecialchars($recordUpdatedAt) ?></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="row g-2 mt-4 pt-4 border-top">
-                            <div class="col-md-4">
-                                <a href="../../dashboard.php" class="btn btn-light border w-100 py-2 fw-bold small">
-                                    <i class="bi bi-arrow-left me-1"></i> Go Back
-                                </a>
-                            </div>
-                            <div class="col-md-4">
-                                <a href="../update/edit.php?user_id=<?= htmlspecialchars($recordUserId ?? '') ?>" class="btn btn-primary w-100 py-2 fw-bold shadow-sm small">
-                                    <i class="bi bi-pencil-square me-1"></i> Edit Profile
-                                </a>
-                            </div>
-                            <div class="col-md-4">
-                                <button type="button" class="btn btn-outline-danger w-100 py-2 fw-bold small" data-bs-toggle="modal" data-bs-target="#deleteModal<?= htmlspecialchars($recordUserId ?? '') ?>">
-                                    <i class="bi bi-trash3 me-1"></i> Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+        <div class="profile-body">
+            <div class="section-header">User Information</div>
+            <div class="d-flex flex-nowrap gap-3 mb-2">
+                <div style="flex: 4;">
+                    <label>Last Name</label>
+                    <div class="cell"><?= htmlspecialchars($recordLastName ?: 'N/A') ?></div>
                 </div>
-
-                <!-- Delete Modal -->
-                <div class="modal fade" id="deleteModal<?= htmlspecialchars($recordUserId ?? '') ?>" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content border-0 shadow">
-                            <?php
-                            $row['email'] = $recordEmail;
-                            $row['user_id'] = $recordUserId ?? '';
-                            $row['first_name'] = $recordFirstName;
-                            $row['last_name'] = $recordLastName;
-                            $row['suffix'] = $recordSuffix;
-                            include '../delete/delete.php';
-                            ?>
-                        </div>
-                    </div>
+                <div style="flex: 4;">
+                    <label>First Name</label>
+                    <div class="cell"><?= htmlspecialchars($recordFirstName ?: 'N/A') ?></div>
                 </div>
+                <div style="flex: 4;">
+                    <label>Middle Name</label>
+                    <div class="cell"><?= htmlspecialchars($recordMiddleName ?: 'N/A') ?></div>
+                </div>
+                <div style="flex: 1;">
+                    <label>Suffix</label>
+                    <div class="cell"><?= htmlspecialchars($recordSuffix ?: 'N/A') ?></div>
+                </div>
+            </div>
+            <div class="d-flex flex-nowrap gap-3 mb-2">
+                <div style="flex: 4;">
+                    <label>Birthday</label>
+                    <div class="cell"><?= htmlspecialchars($recordBirthday ?: 'N/A') ?></div>
+                </div>
+                <div style="flex: 4;">
+                    <label>Sex</label>
+                    <div class="cell"><?= htmlspecialchars($recordSex ?: 'N/A') ?></div>
+                </div>
+            </div>
 
+            <div class="section-header">Address</div>
+            <div class="d-flex flex-nowrap gap-3 mb-2">
+                <div style="flex: 4;">
+                    <label>Barangay</label>
+                    <div class="cell"><?= htmlspecialchars($recordBarangay ?: 'N/A') ?></div>
+                </div>
+                <div style="flex: 4;">
+                    <label>City</label>
+                    <div class="cell"><?= htmlspecialchars($recordCity ?: 'N/A') ?></div>
+                </div>
+                <div style="flex: 4;">
+                    <label>Province</label>
+                    <div class="cell"><?= htmlspecialchars($recordProvince ?: 'N/A') ?></div>
+                </div>
+            </div>
+
+            <div class="section-header">Contact Information</div>
+            <div class="d-flex flex-nowrap gap-3 mb-2">
+                <div style="flex: 6;">
+                    <label>Email</label>
+                    <div class="cell"><?= htmlspecialchars($recordEmail ?: 'N/A') ?></div>
+                </div>
+                <div style="flex: 6;">
+                    <label>Contact Number</label>
+                    <div class="cell"><?= htmlspecialchars($recordMobileNumber ?: 'N/A') ?></div>
+                </div>
+            </div>
+
+            <div class="section-header">Account Details</div>
+            <div class="d-flex flex-nowrap gap-3 mb-2">
+                <div style="flex: 1;">
+                    <label>ID</label>
+                    <div class="cell"><?= htmlspecialchars($recordId ?? 0) ?></div>
+                </div>
+                <div style="flex: 2;">
+                    <label>Role</label>
+                    <div class="cell"><?= htmlspecialchars($recordRoleLabel) ?></div>
+                </div>
+                <div style="flex: 4;">
+                    <label>Registration Number</label>
+                    <div class="cell"><?= htmlspecialchars($recordRegistrationNumber ?: 'N/A') ?></div>
+                </div>
+                <div style="flex: 4;">
+                    <label>Student Number</label>
+                    <div class="cell"><?= htmlspecialchars($recordStudentNumber ?: 'N/A') ?></div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="../../dashboard.php" class="btn btn-back"><i class="bi bi-arrow-left me-1"></i> Go Back</a>
+                <?php if ($currentUserRoleId === 1): ?>
+                    <a href="../update/edit.php?id=<?= htmlspecialchars($record['id'] ?? '') ?>" class="btn btn-edit"><i class="bi bi-pencil-square me-1"></i> Edit Profile</a>
+                <?php else: ?>
+                    <span class="btn btn-edit" style="visibility:hidden;">Edit Profile</span>
+                <?php endif; ?>
+                <button type="button" class="btn btn-delete" data-bs-toggle="modal" data-bs-target="#deleteModal<?= htmlspecialchars($recordId ?? '') ?>">
+                    <i class="bi bi-trash3 me-1"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal<?= htmlspecialchars($recordId ?? '') ?>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <?php
+                $row['email'] = $recordEmail;
+                $row['id'] = $record['id'] ?? '';
+                $row['first_name'] = $recordFirstName;
+                $row['last_name'] = $recordLastName;
+                $row['suffix'] = $recordSuffix;
+                include '../delete/delete.php';
+                ?>
             </div>
         </div>
     </div>

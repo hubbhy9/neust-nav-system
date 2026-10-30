@@ -38,8 +38,7 @@ if (isset($_POST['Add'])) {
             'last_name'  => $ln,
             'suffix'     => $_POST['suffix'] ?? '',
             'email'      => $email,
-            'pass_word'  => password_hash($pass, PASSWORD_DEFAULT),
-            'office_id'  => $_POST['office_id'] ?? null,
+            'password'   => password_hash($pass, PASSWORD_DEFAULT),
             'created_at' => date('Y-m-d H:i:s')
         ];
 
@@ -48,7 +47,7 @@ if (isset($_POST['Add'])) {
         if ($success) {
            echo "<script>
 alert('Account registered successfully!');
-window.location.href = '../../login.php';
+window.location.href = '../../index.php';
 </script>";
             exit;
         } else {
@@ -238,28 +237,28 @@ window.location.href = '../../login.php';
                                 <div class="col-md-6 pe-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">First Name <span class="text-danger">*</span></label>
-                                        <input type="text" name="first_name" class="form-control form-control-sm"
+                                        <input type="text" name="first_name" class="form-control form-control-sm name-field"
                                             style="text-transform: capitalize;" placeholder="Juan"
-                                            pattern="^[A-Za-z\s]+$" required>
+                                            pattern="^[\pL\s'.-]+$" required>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Last Name <span class="text-danger">*</span></label>
-                                        <input type="text" name="last_name" class="form-control form-control-sm"
+                                        <input type="text" name="last_name" class="form-control form-control-sm name-field"
                                             style="text-transform: capitalize;" placeholder="Dela Cruz"
-                                            pattern="^[A-Za-z\s]+$" required>
+                                            pattern="^[\pL\s'.-]+$" required>
                                     </div>
 
                                     <div class="row g-2">
                                         <div class="col-8">
                                             <label class="form-label">Middle Name</label>
-                                            <input type="text" name="middle_name" class="form-control form-control-sm"
-                                                style="text-transform: capitalize;" placeholder="Santos">
+                                            <input type="text" name="middle_name" class="form-control form-control-sm name-field"
+                                                style="text-transform: capitalize;" placeholder="Santos" pattern="^[\pL\s'.-]+$">
                                         </div>
                                         <div class="col-4">
                                             <label class="form-label">Suffix</label>
-                                            <input type="text" name="suffix" class="form-control form-control-sm"
-                                                style="text-transform: capitalize;" placeholder="Jr.">
+                                            <input type="text" name="suffix" class="form-control form-control-sm name-field"
+                                                style="text-transform: capitalize;" placeholder="Jr." pattern="^[\pL\s'.-]+$">
                                         </div>
                                     </div>
 
@@ -303,7 +302,7 @@ window.location.href = '../../login.php';
                                 </button>
                                 <div class="mt-3 small text-muted">
                                     Already have an account?
-                                    <a href="../../login.php" class="signin-link text-decoration-none ms-1">Sign In</a>
+                                    <a href="../../index.php" class="signin-link text-decoration-none ms-1">Sign In</a>
                                 </div>
                             </div>
                         </div>
@@ -312,6 +311,36 @@ window.location.href = '../../login.php';
             </div>
         </div>
     </div>
+
+    <script>
+        (function () {
+            function formatNameValue(value) {
+                return String(value || '')
+                    .replace(/\d+/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .split(' ')
+                    .filter(Boolean)
+                    .map(function (segment) {
+                        if (!segment) return '';
+                        return segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase();
+                    })
+                    .join(' ');
+            }
+
+            document.querySelectorAll('.name-field').forEach(function (input) {
+                input.addEventListener('keydown', function (event) {
+                    if (/\d/.test(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+
+                input.addEventListener('input', function () {
+                    input.value = formatNameValue(input.value);
+                });
+            });
+        })();
+    </script>
 
 </body>
 

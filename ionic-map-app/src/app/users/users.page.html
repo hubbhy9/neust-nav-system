@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar><ion-title>User management</ion-title></ion-toolbar>
+</ion-header>
+
+<ion-content class="users-page">
+  <main class="users-shell">
+    <header class="page-heading">
+      <div><p class="eyebrow">Administration</p><h1>Users</h1><p>Manage campus accounts and assigned roles.</p></div>
+      <span class="user-count" *ngIf="!isLoading">{{ users.length }} accounts</span>
+    </header>
+
+    @if (errorMessage) { <ion-text color="danger"><p class="notice">{{ errorMessage }}</p></ion-text> }
+    @if (successMessage) {
+      <section class="notice success" role="status">
+        <p>{{ successMessage }}</p>
+        @if (temporaryPassword) { <p>Temporary password: <strong>{{ temporaryPassword }}</strong></p> }
+      </section>
+    }
+
+    <section class="editor" aria-label="Create or edit user">
+      <div class="editor-heading"><h2>{{ editingId ? 'Edit account' : 'Add account' }}</h2><span>Required fields marked by the form</span></div>
+      <form (ngSubmit)="saveUser()">
+        <div class="form-grid">
+          <ion-item><ion-label position="stacked">First name</ion-label><ion-input required [(ngModel)]="firstName" name="firstName" autocomplete="given-name"></ion-input></ion-item>
+          <ion-item><ion-label position="stacked">Last name</ion-label><ion-input required [(ngModel)]="lastName" name="lastName" autocomplete="family-name"></ion-input></ion-item>
+          <ion-item><ion-label position="stacked">Middle name</ion-label><ion-input [(ngModel)]="middleName" name="middleName"></ion-input></ion-item>
+          <ion-item><ion-label position="stacked">Suffix</ion-label><ion-input [(ngModel)]="suffix" name="suffix"></ion-input></ion-item>
+          <ion-item class="wide"><ion-label position="stacked">Email</ion-label><ion-input required type="email" [(ngModel)]="email" name="email" autocomplete="email"></ion-input></ion-item>
+          <ion-item><ion-label position="stacked">Student number</ion-label><ion-input [(ngModel)]="studentNumber" name="studentNumber"></ion-input></ion-item>
+          <ion-item><ion-label position="stacked">Registration number</ion-label><ion-input [(ngModel)]="registrationNumber" name="registrationNumber"></ion-input></ion-item>
+          @if (editingId) {
+            <ion-item class="wide"><ion-label position="stacked">Role</ion-label><ion-select [(ngModel)]="roleId" name="roleId" interface="popover"><ion-select-option *ngFor="let role of roles" [value]="role.role_id">{{ role.role_name }}</ion-select-option></ion-select></ion-item>
+          }
+        </div>
+        <div class="form-actions">
+          <ion-button type="submit" [disabled]="isSaving">{{ isSaving ? 'Saving...' : editingId ? 'Save changes' : 'Create account' }}</ion-button>
+          @if (editingId) { <ion-button type="button" fill="outline" (click)="cancelEdit()">Cancel</ion-button> }
+        </div>
+      </form>
+    </section>
+
+    <div class="list-toolbar">
+      <h2>All accounts</h2>
+      <ion-input class="search-input" type="search" placeholder="Search name, email, student number" [(ngModel)]="searchText" name="searchUsers" aria-label="Search users"></ion-input>
+    </div>
+
+    @if (isLoading) { <section class="notice">Loading user accounts...</section> }
+    @else if (filteredUsers.length === 0) { <section class="notice">No matching accounts found.</section> }
+    @else {
+      <section class="user-list" aria-label="User accounts">
+        @for (user of filteredUsers; track user.id) {
+          <article class="user-row">
+            <div class="user-details">
+              <strong>{{ user.first_name }} {{ user.middle_name }} {{ user.last_name }} {{ user.suffix }}</strong>
+              <span>{{ user.email }}</span>
+              <small>{{ user.student_number || user.registration_number || 'No student number' }}</small>
+            </div>
+            <div class="user-role">{{ user.role }}</div>
+            <div class="user-actions">
+              <ion-button fill="outline" size="small" (click)="editUser(user)">Edit</ion-button>
+              <ion-button fill="clear" color="danger" size="small" [disabled]="user.id === authService.currentUser()?.id" (click)="deleteUser(user)">Delete</ion-button>
+            </div>
+          </article>
+        }
+      </section>
+    }
+  </main>
+</ion-content>

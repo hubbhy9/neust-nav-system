@@ -9,10 +9,10 @@ class view
         $this->con = $db;
     }
 
-    public function getById(int $user_id): array
+    public function getById(int $id): array
     {
-        $stmt = $this->con->prepare('SELECT * FROM users WHERE user_id = ?');
-        $stmt->execute([$user_id]);   
+        $stmt = $this->con->prepare('SELECT * FROM user WHERE id = ?');
+        $stmt->execute([$id]);
         return $stmt->fetch() ?: [];
     }
 }

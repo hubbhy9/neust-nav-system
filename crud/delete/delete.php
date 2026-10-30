@@ -1,6 +1,7 @@
-<form method="POST" action="functions/delete.php">
+<form method="POST" action="../../functions/delete.php">
     <!-- Hidden ID for the backend -->
-    <input type="hidden" name="user_id" value="<?= htmlspecialchars($row['user_id'] ?? '') ?>">
+    <input type="hidden" name="id" value="<?= htmlspecialchars($row['id'] ?? '') ?>">
+    <input type="hidden" name="target" value="user">
 
     <!-- Modal Header -->
     <div class="modal-header border-0 py-3" style="background:#F6F7FA; border-top:4px solid #FFCE00; border-radius: calc(0.5rem - 1px) calc(0.5rem - 1px) 0 0;">
@@ -16,10 +17,16 @@
             <div class="display-6 text-danger mb-2">
                 <i class="bi bi-exclamation-octagon"></i>
             </div>
-            <h6 class="fw-bold text-dark">Are you sure you want to delete this account?</h6>
-            <p class="text-muted small">This action is permanent and cannot be undone.</p>
+            <?php if ((int)($recordRoleId ?? 0) === 1): ?>
+                <h6 class="fw-bold text-dark">Are you sure you want to delete this account?</h6>
+                <p class="text-muted small">The account is archived and can be restored by an administrator.</p>
+            <?php else: ?>
+                <h6 class="fw-bold text-dark">Are you sure you want to delete your account?</h6>
+                <p class="text-muted small">The account is archived and can be restored by an administrator.</p>
+            <?php endif; ?>
         </div>
 
+        <?php if ((int)($recordRoleId ?? 0) === 1): ?>
         <!-- User Summary Card (Read Only) -->
         <div class="bg-light p-3 rounded-3 border">
             <div class="mb-2">
@@ -31,7 +38,7 @@
             <div class="row">
                 <div class="col-4">
                     <label class="form-label smallest fw-bold text-uppercase text-muted mb-0" style="font-size: 0.7rem;">User ID</label>
-                    <div class="small text-dark">#<?= htmlspecialchars($row['user_id'] ?? '') ?></div>
+                    <div class="small text-dark">#<?= htmlspecialchars($row['id'] ?? '') ?></div>
                 </div>
                 <div class="col-8">
                     <label class="form-label smallest fw-bold text-uppercase text-muted mb-0" style="font-size: 0.7rem;">Email Address</label>
@@ -39,6 +46,7 @@
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 
     <!-- Modal Footer -->
@@ -48,10 +56,15 @@
                 <button type="button" class="btn btn-light border w-100 py-2 fw-bold" data-bs-dismiss="modal">Cancel</button>
             </div>
             <div class="col-6">
-                <!-- Changed to btn-danger to indicate a destructive action -->
-                <button type="submit" name="delete" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">
-                    Delete User <i class="bi bi-trash ms-1"></i>
-                </button>
+                <?php if ((int)($recordRoleId ?? 0) === 1): ?>
+                    <button type="submit" name="delete" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">
+                        Delete Users <i class="bi bi-trash ms-1"></i>
+                    </button>
+                <?php else: ?>
+                    <button type="submit" name="delete_own_account" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">
+                        Delete My Account <i class="bi bi-trash ms-1"></i>
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>

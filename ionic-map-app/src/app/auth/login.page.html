@@ -1,0 +1,181 @@
+<ion-content class="login-page" [fullscreen]="true">
+  <div class="login-shell">
+    <section class="brand-panel">
+      <div class="brand-top">
+        <img class="logo-mark" src="assets/neust_logo.png" alt="NEUST logo" />
+        <div class="brand-name">
+          <span>Nueva Ecija University of</span>
+          <span>Science and Technology</span>
+          <small>STUDENT NAVIGATION &amp; WAYFINDING SYSTEM</small>
+        </div>
+      </div>
+
+      <h1>Find your way. <span>Know what to do.</span></h1>
+      <p>
+        Search an office, a room, or a service — get the location, the requirements, and the steps, all in one place.
+      </p>
+    </section>
+
+    <section class="form-panel">
+      <ion-card class="login-card">
+        <ion-card-header>
+          <ion-card-title>Welcome back</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p class="subtitle">Sign in with your NEUST credentials</p>
+
+          <form (ngSubmit)="login()" autocomplete="on">
+            <ion-list lines="none">
+              <ion-item>
+                <ion-label position="stacked">Email</ion-label>
+                <ion-input
+                  type="email"
+                  [(ngModel)]="email"
+                  name="email"
+                  required
+                  placeholder="name@neust.edu.ph"
+                ></ion-input>
+              </ion-item>
+
+              <ion-item>
+                <ion-label position="stacked">Password</ion-label>
+                <div class="password-wrap">
+                  <ion-input
+                    [type]="showPassword ? 'text' : 'password'"
+                    [(ngModel)]="password"
+                    name="password"
+                    required
+                    placeholder="Enter your password"
+                  ></ion-input>
+                  <button type="button" class="password-toggle" (click)="togglePasswordVisibility()" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" [attr.aria-pressed]="showPassword">
+                    {{ showPassword ? 'Hide' : 'Show' }}
+                  </button>
+                </div>
+              </ion-item>
+            </ion-list>
+
+            <button type="button" class="forgot-password-link" [disabled]="isSubmitting()" (click)="openForgotPassword()">Forgot password?</button>
+
+            @if (errorMessage()) {
+              <ion-text color="danger">
+                <p class="error-message">{{ errorMessage() }}</p>
+              </ion-text>
+            }
+
+            <ion-button expand="block" type="submit" class="login-button" [disabled]="!privacyAccepted || isSubmitting()">
+              {{ isSubmitting() ? 'Signing in...' : 'Sign In' }}
+            </ion-button>
+          </form>
+          <div class="guest-divider">or</div>
+          <ion-button
+            expand="block"
+            fill="outline"
+            type="button"
+            class="guest-button"
+            [disabled]="!privacyAccepted || isSubmitting()"
+            (click)="continueAsGuest()"
+          >
+            {{ isSubmitting() ? 'Please wait...' : 'Continue as Guest' }}
+          </ion-button>
+          <p class="guest-note">Guest access is read-only.</p>
+        </ion-card-content>
+      </ion-card>
+    </section>
+  </div>
+
+  @if (forgotPasswordOpen()) {
+    <div class="forgot-password-backdrop" role="presentation" [style.--keyboard-offset.px]="keyboardOffset()" [style.--keyboard-available-height.px]="keyboardAvailableHeight()" (click)="$event.target === $event.currentTarget && closeForgotPassword()">
+      <section class="forgot-password-sheet" role="dialog" aria-modal="true" aria-labelledby="forgot-password-title">
+        <header class="forgot-password-header">
+          <span class="forgot-password-icon" aria-hidden="true"><ion-icon name="mail-open-outline"></ion-icon></span>
+          <div>
+            <p class="forgot-password-eyebrow">Account recovery</p>
+            <h2 id="forgot-password-title">Forgot password</h2>
+          </div>
+          <button type="button" class="forgot-password-close" aria-label="Close password recovery" [disabled]="isResettingPassword()" (click)="closeForgotPassword()">×</button>
+        </header>
+        <form novalidate>
+          <p class="forgot-password-copy">
+            @if (resetComplete()) {
+              Your new permanent password has been sent to your email.
+            } @else if (resetOtpSent()) {
+              Enter the 6-digit code sent to your email address.
+            } @else {
+              Enter the Gmail address linked to your account to receive a 6-digit OTP.
+            }
+          </p>
+          @if (!resetComplete()) {
+            <ion-item class="recovery-field">
+              <ion-label position="stacked">Gmail address</ion-label>
+              <ion-input required type="email" autocomplete="email" placeholder="name@gmail.com" [(ngModel)]="resetIdentifier" name="resetIdentifier" [disabled]="isResettingPassword()"></ion-input>
+            </ion-item>
+          }
+          @if (resetOtpSent() && !resetComplete()) {
+            <div class="otp-entry-step">
+              <p class="otp-sent-indicator"><ion-icon name="checkmark-circle-outline" aria-hidden="true"></ion-icon>Code sent. Valid for 15 minutes.</p>
+              <ion-item class="recovery-field">
+                <ion-label position="stacked">6-digit OTP</ion-label>
+                <ion-input required type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" [(ngModel)]="resetOtp" name="resetOtp" [disabled]="isResettingPassword()"></ion-input>
+              </ion-item>
+            </div>
+          }
+          @if (isResettingPassword()) {
+            <div class="reset-progress" role="status" aria-live="polite">
+              <div class="reset-progress-copy">
+                <ion-spinner name="crescent" aria-hidden="true"></ion-spinner>
+                <span>{{ resetOtpSent() ? 'Verifying your code...' : 'Sending your recovery code...' }}</span>
+              </div>
+              <span class="reset-progress-track" aria-hidden="true"><span></span></span>
+            </div>
+          }
+          @if (resetMessage()) {
+            <div class="reset-message" [class.error]="resetMessageIsError()" [class.success]="!resetMessageIsError()" role="status" aria-live="polite">
+              <ion-icon [name]="resetMessageIsError() ? 'alert-circle-outline' : 'checkmark-circle-outline'" aria-hidden="true"></ion-icon>
+              <span>{{ resetMessage() }}</span>
+            </div>
+          }
+          <footer class="forgot-password-actions">
+            <ion-button type="button" fill="outline" [disabled]="isResettingPassword()" (click)="closeForgotPassword()">Cancel</ion-button>
+            <ion-button type="button" [disabled]="isResettingPassword()" (click)="submitPasswordReset()">
+              @if (isResettingPassword()) {
+                <ion-spinner slot="start" name="crescent" aria-hidden="true"></ion-spinner>
+                {{ resetOtpSent() ? 'Verifying...' : 'Sending OTP...' }}
+              } @else {
+                {{ resetComplete() ? 'Done' : resetOtpSent() ? 'Verify OTP' : 'Send OTP' }}
+              }
+            </ion-button>
+          </footer>
+        </form>
+      </section>
+    </div>
+  }
+
+  @if (!privacyAccepted) {
+    <div class="privacy-backdrop" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+      <section class="privacy-modal">
+        <header>
+          <h2 id="privacy-title">Privacy Policy &amp; System Agreement</h2>
+        </header>
+        <div class="privacy-copy">
+          <h3>Before you sign in</h3>
+          <p>By using this NEUST Student Navigation and Wayfinding System, you agree that your account information, office access, and navigation-related activity may be used to provide services and improve campus guidance.</p>
+          <ul>
+            <li>Your name, email, role, and office assignment support authentication and access control.</li>
+            <li>Document and process information may be stored for tracking and campus service coordination.</li>
+            <li>Access is limited to authorized users and monitored for system security.</li>
+            <li>You are responsible for keeping your login credentials confidential.</li>
+          </ul>
+          <p>Your data is processed for authorized academic and operational purposes related to this system.</p>
+        </div>
+        <footer>
+          <label class="consent-option">
+            <input type="checkbox" [(ngModel)]="rememberConsent" />
+            <span>Don't show this again</span>
+          </label>
+          <ion-button expand="block" class="consent-button" (click)="acceptPrivacy()">I Agree</ion-button>
+        </footer>
+      </section>
+    </div>
+  }
+</ion-content>

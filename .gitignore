@@ -5,6 +5,8 @@ composer.lock
 # Local environment / secrets
 .env
 .env.*
+.public-app-url
+.public-app-url
 
 # OS / editor
 .DS_Store

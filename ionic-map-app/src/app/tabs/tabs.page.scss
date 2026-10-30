@@ -1,0 +1,60 @@
+:host {
+  ion-tabs {
+    height: 100%;
+  }
+
+  ion-tab-bar {
+    --background: #fff;
+    --border: 1px solid rgba(17, 37, 72, 0.1);
+    --color: #64738a;
+    --color-selected: #1749b8;
+    box-shadow: 0 -8px 22px -20px rgba(15, 27, 60, 0.5);
+    height: 64px;
+  }
+
+  ion-tab-button {
+    --padding-bottom: 6px;
+    --padding-top: 6px;
+    min-width: 0;
+    max-width: 180px;
+    white-space: normal;
+  }
+
+  ion-icon {
+    font-size: 1.3rem;
+  }
+
+  .tab-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  ion-tab-bar {
+    height: 60px;
+  }
+
+  ion-tab-button {
+    min-width: 0;
+    padding: 0 2px;
+  }
+
+  .tab-label {
+    font-size: 0.62rem;
+    line-height: 1.2;
+  }
+}
+
+@media (min-width: 768px) {
+  ion-tab-bar {
+    height: 70px;
+  }
+
+  .tab-label {
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,119 @@
+<ion-content class="request-access-page">
+  <main class="request-access-shell">
+    <header class="page-heading">
+      <img class="brand-mark" src="assets/neust_logo.png" alt="NEUST system logo" />
+      <div><p class="eyebrow">NEUST Smart Campus</p><h1>Your requested documents</h1><p class="subtitle">A direct shortcut to the services in your request.</p></div>
+    </header>
+
+    @if (isLoading) {
+      <section class="state-panel" role="status">Loading your request…</section>
+    } @else if (errorMessage) {
+      <section class="state-panel error-panel" role="alert">
+        <h2>Link unavailable</h2>
+        <p>{{ errorMessage }}</p>
+        @if (canRequestResend) {
+          <p>Submit these documents as a new pending request for office review. The existing request will not change.</p>
+          @if (resendMessage) { <p class="resend-message" role="status">{{ resendMessage }}</p> }
+          <ion-button [disabled]="isResending" (click)="requestNewLink()">
+            @if (isResending) { <ion-spinner slot="start" name="crescent" aria-hidden="true"></ion-spinner> }
+            {{ isResending ? 'Submitting request...' : 'Submit new request for review' }}
+          </ion-button>
+        }
+      </section>
+    } @else if (request) {
+      <section class="request-summary" aria-label="Request status">
+        <div><span class="summary-label">Request</span><strong>#{{ request.request_id }}</strong></div>
+        <div><span class="summary-label">Status</span><span class="status-badge" [attr.data-status]="request.status">{{ request.status }}</span></div>
+        <div><span class="summary-label">Submitted</span><time>{{ formatDateTime(request.created_at) }}</time></div>
+        <div><span class="summary-label">Link expires</span><time>{{ formatDateTime(request.expires_at) }}</time></div>
+      </section>
+
+      @if (request.status !== 'accepted') {
+        <section class="state-panel decision-panel" role="status">
+          <h2>{{ request.status === 'rejected' ? 'This request was not approved' : 'Your request is awaiting approval' }}</h2>
+          <p>{{ request.status === 'rejected' ? 'The requested document details are unavailable from this link.' : 'The requested documents will appear here after the request is accepted.' }}</p>
+        </section>
+      } @else {
+        <section class="document-list" aria-label="Approved requested services">
+          @for (service of items; track service.process_id) {
+            <article class="service-row" [style.--service-color]="officeColor(service.office_name)">
+              <button class="service-summary" type="button" (click)="openDetails(service)" [attr.aria-label]="'View steps for ' + service.title">
+                <span class="service-office-label">{{ service.office_name || 'Campus office' }}</span>
+                <span class="service-card-icon"><ion-icon name="document-text-outline" aria-hidden="true"></ion-icon></span>
+                <span class="service-card-content">
+                  <strong class="service-card-title">{{ service.title }}</strong>
+                  <span class="service-audience">For {{ service.who_may_avail || 'students, staff, and eligible applicants' }}</span>
+                </span>
+                <span class="service-card-cta">View Steps <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon></span>
+              </button>
+            </article>
+          } @empty {
+            <section class="state-panel">No approved document details are available for this request.</section>
+          }
+        </section>
+      }
+
+      <footer class="page-actions">
+        <p>This private link only opens the documents in this request.</p>
+        <ion-button fill="outline" (click)="continueAsGuest()">Browse all services as guest</ion-button>
+      </footer>
+      @if (canRequestResend) {
+        <section class="resend-panel" aria-label="Request another email link">
+          <p>Need another review? Submit these documents as a new request. Your current request will stay unchanged.</p>
+          <ion-button fill="outline" [disabled]="isResending" (click)="requestNewLink()">
+            @if (isResending) { <ion-spinner slot="start" name="crescent" aria-hidden="true"></ion-spinner> }
+            {{ isResending ? 'Submitting request...' : 'Submit new request for review' }}
+          </ion-button>
+          @if (resendMessage) { <p class="resend-message" role="status">{{ resendMessage }}</p> }
+        </section>
+      }
+    }
+  </main>
+</ion-content>
+
+<ion-modal class="service-detail-modal" [isOpen]="selectedService !== null" [backdropDismiss]="true" (didDismiss)="closeDetails()">
+  <ng-template>
+    @if (selectedService; as service) {
+      <section class="service-modal" role="dialog" aria-modal="true" aria-labelledby="requested-service-title">
+        <header class="service-modal-header">
+          <div class="modal-eyebrow">Approved document details</div>
+          <button class="modal-close" type="button" aria-label="Close service details" (click)="closeDetails()"><span aria-hidden="true">×</span></button>
+          <h2 id="requested-service-title">{{ service.title }}</h2>
+        </header>
+        <div class="service-modal-body">
+          <section class="service-info-grid" aria-label="Service information">
+            <article class="service-info-box"><span>Office division</span><p>{{ service.office_name || 'Not specified' }}</p></article>
+            <article class="service-info-box"><span>Classification</span><p>{{ service.classification || 'Not specified' }}</p></article>
+            <article class="service-info-box"><span>Type of transaction</span><p>{{ service.transaction_type || 'Not specified' }}</p></article>
+            <article class="service-info-box"><span>Who may avail</span><p>{{ service.who_may_avail || 'Not specified' }}</p></article>
+          </section>
+
+          @if (service.requirements.length) {
+            <section class="requirements-panel">
+              <h3>Requirements &amp; where to secure</h3>
+              <div class="modal-table-scroll"><table class="service-detail-table requirements-table">
+                <thead><tr><th>Requirements</th><th>Where to secure</th></tr></thead>
+                <tbody>@for (requirement of service.requirements; track $index) { <tr><td data-label="Requirement"><span class="requirement-name"><ion-icon name="checkmark-circle" aria-hidden="true"></ion-icon>{{ requirementName(requirement) }}</span></td><td data-label="Where to secure">{{ requirement.where_to_secure || 'Not specified' }}</td></tr> }</tbody>
+              </table></div>
+            </section>
+          }
+
+          @if (service.steps.length) {
+            <section class="process-panel">
+              <h3>Process steps</h3>
+              <div class="modal-table-scroll"><table class="service-detail-table process-table">
+                <thead><tr><th>Client steps</th><th>Agency actions</th><th>Fees</th><th>Time</th><th>Responsible</th></tr></thead>
+                <tbody>@for (step of service.steps; track $index) { <tr><td data-label="Client steps">{{ stepText(step, 'client_step') }}</td><td data-label="Agency actions">{{ stepText(step, 'agency_action') }}</td><td data-label="Fees">{{ step.fees || 'None' }}</td><td data-label="Time">{{ step.processing_time || '-' }}</td><td data-label="Responsible">{{ step.person_responsible || '-' }}</td></tr> }</tbody>
+              </table></div>
+            </section>
+          }
+
+          <section class="service-totals" aria-label="Service totals">
+            <article><span>Total fees</span><strong>{{ service.total_fee || 'None' }}</strong></article>
+            <article><span>Total time</span><strong>{{ service.total_time || 'None' }}</strong></article>
+          </section>
+        </div>
+      </section>
+    }
+  </ng-template>
+</ion-modal>

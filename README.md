@@ -5,7 +5,7 @@ A PHP-based campus navigation and wayfinding dashboard for NEUST.
 ## Project structure
 
 - `index.php` – main landing entry
-- `login.php` – login screen
+- `index.php` – login screen / main entry
 - `dashboard.php` – main dashboard interface
 - `map.php` – campus map view
 - `functions/` – PHP action handlers
@@ -22,7 +22,7 @@ A PHP-based campus navigation and wayfinding dashboard for NEUST.
 4. Import the SQL schema in `db/` into your MySQL database.
 5. Update your database config in `config/config.php` or the relevant DB connection file.
 6. Open the project in a browser, for example:
-   - `http://localhost/cap/login.php`
+   - `http://localhost/cap/index.php`
 
 ## GitHub repo setup
 

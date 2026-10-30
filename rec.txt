@@ -1,0 +1,22 @@
+Recommendations for the Proposed System
+
+The proposed system should implement QR-code-based identification of rooms and facilities as its primary location-access mechanism. Each QR code must correspond to a unique, active location record stored in the database. After scanning, the application should validate the identifier, retrieve the corresponding location information, and highlight the associated map node. The scanned location may also serve as the navigation starting point. However, the system should not be described as independently detecting GPS position or tracking movement between scans, since this capability is not part of the intended design [2].
+
+A separate future enhancement may include real-time movement tracking only when there is a clear user need and a valid safety justification. If implemented, it would require location permissions, periodic position updates, a moving map marker, robust error handling, and explicit user consent. The document emphasizes that GPS performance is limited indoors, that indoor positioning may require additional infrastructure, and that any tracking feature should minimize collected data, disclose when tracking is active, limit retention periods, and undergo privacy and accuracy testing before release [3].
+
+The system should also be designed for reliability, connectivity resilience, and offline preparedness. It should be tested under slow network conditions, API failures, database interruptions, and server unavailability. In such cases, the application should display clear error messages and provide a safe recovery path for the user. Where feasible, essential map data may be cached, but the system should maintain clear update and version rules so cached content does not remain stale without notice. Any claim of offline access should only be made after the feature has been implemented and validated [4].
+
+Continuous maintenance and updating are also necessary. A maintenance procedure should specify who is responsible for updating map data, who approves room or facility changes, how edits are tested, and how previous map versions can be restored when necessary. Service information, office names, document requirements, and contact details should be reviewed on a scheduled basis. Data validation rules should also be enforced to prevent duplicate identifiers, invalid connections, blank names, and outdated QR code mappings [5].
+
+In addition, the system may be integrated with the school portal as a proposed enhancement, but this should not be presented as already implemented unless it is verified. Coordination with portal administrators should define the integration method, authentication and permission rules, data ownership, and the types of information that may be shared. The integration should avoid duplicating personal or academic records, protect accounts and stored data, use documented APIs when available, and be tested for security, compatibility, reliability, and usability before deployment [6] [7].
+
+Overall, the recommended system should prioritize accurate location identification, secure data handling, user accessibility, and maintainability. These design considerations support a dependable and practical solution for campus navigation while preserving clarity about the system’s actual capabilities and limitations.
+
+References
+
+[2] Recommendations_Numbering_Fixed.docx. (n.d.). [Missing authors].
+[3] Recommendations_Numbering_Fixed.docx. (n.d.). [Missing authors].
+[4] Recommendations_Numbering_Fixed.docx. (n.d.). [Missing authors].
+[5] Recommendations_Numbering_Fixed.docx. (n.d.). [Missing authors].
+[6] Recommendations_Numbering_Fixed.docx. (n.d.). [Missing authors].
+[7] Recommendations_Numbering_Fixed.docx. (n.d.). [Missing authors].

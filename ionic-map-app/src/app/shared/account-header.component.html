@@ -1,0 +1,38 @@
+<ion-header class="app-header">
+  <ion-toolbar>
+    <div class="toolbar-brand" slot="start">
+      <img class="toolbar-logo" src="assets/neust_logo.png" alt="NEUST" />
+      <span>{{ title() }}</span>
+    </div>
+
+    <ion-buttons slot="end" class="toolbar-actions">
+      <button
+        type="button"
+        class="user-pill"
+        aria-label="Open profile menu"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="isMenuOpen"
+        (click)="$event.stopPropagation(); toggleMenu()"
+      >
+        <span class="user-icon" aria-hidden="true">{{ (authService.currentUser()?.name || 'U').charAt(0) }}</span>
+        <span class="user-name">{{ authService.currentUser()?.name || 'User' }}</span>
+        <span class="profile-chevron" aria-hidden="true"></span>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+@if (isMenuOpen) {
+  <div class="account-menu" role="menu" aria-label="Profile menu" (click)="$event.stopPropagation()">
+    <div class="account-identity">
+      <strong>{{ authService.currentUser()?.name || 'User' }}</strong>
+      @if (authService.currentUser()?.email) { <span>{{ authService.currentUser()?.email }}</span> }
+      @if (authService.currentUser()?.role) { <small>{{ authService.currentUser()?.role }}</small> }
+      @if (authService.currentUser()?.isGuest) { <small>Read-only access</small> }
+    </div>
+    <button type="button" class="account-logout" role="menuitem" (click)="signOut()">
+      <span aria-hidden="true">↪</span>
+      {{ authService.currentUser()?.isGuest ? 'Log in' : 'Sign out' }}
+    </button>
+  </div>
+}

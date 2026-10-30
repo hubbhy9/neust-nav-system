@@ -1,22 +1,23 @@
 <?php
 require_once __DIR__ . '/../../libraries/db.php';
 require_once __DIR__ . '/../../functions/view.php';
-include __DIR__ . '/../../libraries/include.php';
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 
 if (!isset($db) || !$db instanceof PDO) {
     die('Database connection is not available.');
 }
 
-$Departments = new Departments($db);
-$depts = $Departments->getDepartments();
-
-$rolesObj = new roles($db);
-$roles_list = $rolesObj->getroles();
+$roles_list = [
+    0 => 'User',
+    1 => 'Admin',
+];
 
 $view = new view($db);
 $record = [];
-if (isset($_GET['user_id'])) {
-    $record = $view->getById((int) $_GET['user_id']);
+if (isset($_GET['id'])) {
+    $record = $view->getById((int) $_GET['id']);
 }
 
 $recordFirstName = $record['first_name'] ?? '';
@@ -24,15 +25,15 @@ $recordLastName = $record['last_name'] ?? '';
 $recordMiddleName = $record['middle_name'] ?? '';
 $recordSuffix = $record['suffix'] ?? '';
 $recordEmail = $record['email'] ?? '';
-$recordEmailVerified = (int) ($record['email_verified'] ?? 0);
 
 if (isset($_POST['update'])) {
     include __DIR__ . '/../../functions/edit.php';
     $edit = new edit($db);
-    $edit->update((int) $_GET['user_id']);
+    $edit->update((int) $_GET['id']);
     header("Location: ../../dashboard.php");
     exit;
 }
+include __DIR__ . '/../../libraries/include.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,29 +88,29 @@ if (isset($_POST['update'])) {
                         <!-- Name Row -->
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-uppercase text-muted">First Name</label>
-                            <input type="text" name="first_name" class="form-control form-control-sm"
+                            <input type="text" name="first_name" class="form-control form-control-sm name-field"
                                 style="text-transform: capitalize;"
-                                value="<?= htmlspecialchars($recordFirstName) ?>" required>
+                                value="<?= htmlspecialchars($recordFirstName) ?>" pattern="^[\pL\s'.-]+$" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-uppercase text-muted">Last Name</label>
-                            <input type="text" name="last_name" class="form-control form-control-sm"
+                            <input type="text" name="last_name" class="form-control form-control-sm name-field"
                                 style="text-transform: capitalize;"
-                                value="<?= htmlspecialchars($recordLastName) ?>" required>
+                                value="<?= htmlspecialchars($recordLastName) ?>" pattern="^[\pL\s'.-]+$" required>
                         </div>
 
                         <!-- Secondary Name Row -->
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-uppercase text-muted">Middle Name</label>
-                            <input type="text" name="middle_name" class="form-control form-control-sm"
+                            <input type="text" name="middle_name" class="form-control form-control-sm name-field"
                                 style="text-transform: capitalize;"
-                                value="<?= htmlspecialchars($recordMiddleName) ?>">
+                                value="<?= htmlspecialchars($recordMiddleName) ?>" pattern="^[\pL\s'.-]+$">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold text-uppercase text-muted">Suffix</label>
-                            <input type="text" name="suffix" class="form-control form-control-sm"
+                            <input type="text" name="suffix" class="form-control form-control-sm name-field"
                                 style="text-transform: capitalize;"
-                                value="<?= htmlspecialchars($recordSuffix) ?>">
+                                value="<?= htmlspecialchars($recordSuffix) ?>" pattern="^[\pL\s'.-]+$">
                         </div>
 
                         <!-- Email -->
@@ -177,6 +178,36 @@ if (isset($_POST['update'])) {
             </div>
         </div>
     </div>
+
+    <script>
+        (function () {
+            function formatNameValue(value) {
+                return String(value || '')
+                    .replace(/\d+/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .split(' ')
+                    .filter(Boolean)
+                    .map(function (segment) {
+                        if (!segment) return '';
+                        return segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase();
+                    })
+                    .join(' ');
+            }
+
+            document.querySelectorAll('.name-field').forEach(function (input) {
+                input.addEventListener('keydown', function (event) {
+                    if (/\d/.test(event.key)) {
+                        event.preventDefault();
+                    }
+                });
+
+                input.addEventListener('input', function () {
+                    input.value = formatNameValue(input.value);
+                });
+            });
+        })();
+    </script>
 </body>
 
 </html>

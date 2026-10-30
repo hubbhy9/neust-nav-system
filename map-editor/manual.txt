@@ -1,0 +1,141 @@
+Campus Map Editor Manual
+========================
+
+Overview
+--------
+This tool is used to build and edit a campus map layout.
+The left sidebar contains the building list, quick actions, and property controls.
+The main workspace is the canvas where you add, select, move, connect, and resize map items.
+
+Main interface
+--------------
+- Side panel: shows buildings, quick actions, and item property fields.
+- Building list: lists all buildings in the map.
+- Quick actions:
+  - Snap to grid
+  - Active floor
+  - Map width and height
+  - Apply map size
+  - Hide junctions and connections
+  - Save layout
+  - Reset canvas
+- Properties:
+  - Label
+  - Text size
+  - Font color
+  - Group
+  - Tags
+  - Disable destination
+  - Remove display
+  - Building, floor, color, dimensions
+  - Junction coordinates
+  - Stair design
+  - Line thickness
+  - Multi junction connection
+  - Move to front / Move to back
+  - Apply / Delete
+
+Modes
+-----
+Use the toolbar buttons to switch modes:
+- Select
+- Add building
+- Add room
+- Add junction
+- Add stair
+- Add line
+- Connect
+- Delete
+
+Keyboard mode shortcuts
+-----------------------
+- S = Select mode
+- B = Add building
+- R = Add room
+- J = Add junction
+- F = Add stair
+- L = Add line
+- C = Connect mode
+- Delete / Backspace = Delete selected item(s)
+- Esc = close batch-property popup
+
+Mouse controls
+--------------
+- Left click item = select it
+- Left click empty canvas = clear selection (in select mode)
+- Left drag selected node/building/line = move it
+- Left drag empty canvas = pan/scroll the map
+- Shift + drag empty canvas = pan the map
+- Alt + drag empty canvas = pan the map
+- Middle mouse button = pan the map
+- Right click empty area = start selection box
+- Right click item while multiple items are selected = open batch property popup
+- Scroll wheel = zoom in/out
+- Drag resize handles on selected items = resize them
+
+Selection and grouping
+----------------------
+- Ctrl + click = add/remove item from selection
+- Shift + click = add/remove selection in a toggle style
+- Drag a selection box = select multiple items
+- Ctrl + A = select all items
+- After Ctrl + A, quickly press:
+  - Ctrl + J = select all junctions
+  - Ctrl + R = select all rooms
+  - Ctrl + B = select all buildings
+  - Ctrl + S = select all stairs
+
+Clipboard and history
+---------------------
+- Ctrl + Z = undo
+- Ctrl + Shift + Z = redo
+- Ctrl + Y = redo
+- Ctrl + C = copy selection
+- Ctrl + X = cut selection
+- Ctrl + V = paste selection
+- Ctrl + J = duplicate selected node (when not used for the quick select-all flow)
+
+Movement and editing
+--------------------
+- Arrow keys = nudge selected item by 10 px
+- Selected line:
+  - Arrow keys move the line in 10 px steps
+- Selected building:
+  - Arrow keys move the building and its contained nodes together
+- Selected node:
+  - Arrow keys move the node in 10 px steps
+
+Add and connect tools
+---------------------
+- Add room: click the canvas where the room should appear.
+- Add junction: click the canvas where the junction should appear.
+- Add stair: click the canvas where the stair should appear.
+- Add line: click once to start a line, then click again to end it.
+- Connect: use it to connect selected elements or nodes.
+
+Map actions
+-----------
+- Apply map size: set the canvas width/height and click Apply map size.
+- Reset canvas: clears the map and returns to a blank layout.
+- Export JSON: downloads the map layout as JSON.
+- Import JSON: loads a previously saved map JSON file.
+
+Tips
+----
+- Use Snap to grid for cleaner alignment.
+- Use the floor selector to switch active floor levels.
+- Keep building names and labels clear so they are easy to identify on the map.
+- Use the Properties panel to update width, color, floor, line thickness, group name, and destination settings.
+- Keep selected items grouped when editing buildings or rooms to maintain consistent layout.
+
+Quick workflow example
+----------------------
+1. Click Add building.
+2. Click on the map to place a building.
+3. Select the building and edit its name, size, and color in the Properties panel.
+4. Switch to Add room and place rooms inside the building.
+5. Use Connect or Add line to link rooms and junctions.
+6. Export the JSON when finished.
+
+End of manual
+-------------

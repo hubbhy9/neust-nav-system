@@ -1,0 +1,67 @@
+<app-account-header title="NEUST Smart Campus"></app-account-header>
+
+<ion-content class="home-page">
+  <div class="page-padding">
+    <section class="hero-panel">
+      <div class="hero-copy">
+        <span class="badge">NEUST Smart Campus</span>
+        <h1>Welcome to your campus dashboard</h1>
+        <p>
+          Access services, track document requests, and navigate the campus with a single click.
+          Everything you need for quick and easier campus operations is here.
+        </p>
+
+        <div class="cta-row">
+          <ion-button expand="block" class="primary-btn" (click)="goToMap()">Open Campus Map</ion-button>
+          <ion-button expand="block" fill="outline" (click)="goToServices()">View Services</ion-button>
+        </div>
+      </div>
+
+      <div class="hero-side-card">
+        <div class="mini-card-header">
+          <span class="icon-wrap" aria-hidden="true">⌖</span>
+          <h3>Campus Navigation</h3>
+        </div>
+        <ul>
+          <li>Quick route planning across buildings</li>
+          <li>Office and room highlights for easier location finding</li>
+          <li>Fast access to campus services and document tracking</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="dashboard-sections" aria-label="Campus overview and quick links">
+      <section class="overview-panel">
+        <div class="section-heading">
+          <span class="building-mark" aria-hidden="true">▦</span>
+          <div>
+            <h2>Campus at a glance</h2>
+            <p>NEUST main campus</p>
+          </div>
+        </div>
+        <div class="building-list" aria-label="Campus buildings">
+          <span class="building cict">CICT</span>
+          <span class="building coed">COED</span>
+          <span class="building cmbt">CMBT</span>
+          <span class="building lhs">LHS</span>
+        </div>
+        <p class="overview-copy">The campus map covers three floor levels, with room and office locations across the CICT, COED, CMBT, and LHS buildings.</p>
+      </section>
+
+      <section class="destinations-panel">
+        <div class="section-heading destinations-heading">
+          <div>
+            <h2>Quick destinations</h2>
+            <p>Open a highlighted location or service</p>
+          </div>
+          <span class="crosshair" aria-hidden="true">⌖</span>
+        </div>
+        <div class="destination-list">
+          <ion-button fill="outline" (click)="openDestination('clinic')">Clinic</ion-button>
+          <ion-button fill="outline" (click)="openDestination('registrar')">Registrar</ion-button>
+          <ion-button fill="outline" (click)="openDestination('services')">Document services</ion-button>
+        </div>
+      </section>
+    </section>
+  </div>
+</ion-content>

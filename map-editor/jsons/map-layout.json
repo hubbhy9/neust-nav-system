@@ -1,0 +1,121 @@
+{
+  "nodes": {
+    "wp-main-entrance": {
+      "id": "wp-main-entrance",
+      "label": "Main Entrance",
+      "x": 220,
+      "y": 870,
+      "floor": 1,
+      "type": "facility",
+      "group": "main",
+      "buildingId": "building-cict",
+      "buildingName": "CICT",
+      "width": 90,
+      "height": 56
+    },
+    "wp-admin-office": {
+      "id": "wp-admin-office",
+      "label": "Admin Office",
+      "x": 440,
+      "y": 760,
+      "floor": 1,
+      "type": "room",
+      "group": "cict",
+      "buildingId": "building-cict",
+      "buildingName": "CICT",
+      "width": 120,
+      "height": 52
+    },
+    "wp-cict-hall": {
+      "id": "wp-cict-hall",
+      "label": "CICT Hall",
+      "x": 690,
+      "y": 320,
+      "floor": 1,
+      "type": "facility",
+      "group": "cict",
+      "buildingId": "building-cict",
+      "buildingName": "CICT",
+      "width": 110,
+      "height": 58
+    },
+    "wp-coed-room": {
+      "id": "wp-coed-room",
+      "label": "COED Room",
+      "x": 260,
+      "y": 420,
+      "floor": 1,
+      "type": "room",
+      "group": "coed",
+      "buildingId": "building-coed",
+      "buildingName": "COED",
+      "width": 120,
+      "height": 52
+    },
+    "wp-lab-room": {
+      "id": "wp-lab-room",
+      "label": "Lab Room",
+      "x": 970,
+      "y": 560,
+      "floor": 1,
+      "type": "room",
+      "group": "draft",
+      "buildingId": "building-cmbt",
+      "buildingName": "CMBT",
+      "width": 120,
+      "height": 52
+    },
+    "wp-junction-a": {
+      "id": "wp-junction-a",
+      "label": "Junction A",
+      "x": 510,
+      "y": 540,
+      "floor": 1,
+      "type": "junction",
+      "group": "corridor",
+      "buildingId": "building-cict",
+      "buildingName": "CICT",
+      "width": 28,
+      "height": 28
+    }
+  },
+  "edges": [
+    ["wp-main-entrance", "wp-admin-office"],
+    ["wp-admin-office", "wp-junction-a"],
+    ["wp-junction-a", "wp-cict-hall"],
+    ["wp-junction-a", "wp-coed-room"],
+    ["wp-junction-a", "wp-lab-room"]
+  ],
+  "buildings": [
+    {
+      "id": "building-cict",
+      "name": "CICT",
+      "color": "#4f9cff",
+      "x": 120,
+      "y": 300,
+      "width": 560,
+      "height": 700,
+      "floors": 3
+    },
+    {
+      "id": "building-coed",
+      "name": "COED",
+      "color": "#7ee7a8",
+      "x": 820,
+      "y": 300,
+      "width": 300,
+      "height": 220,
+      "floors": 2
+    },
+    {
+      "id": "building-cmbt",
+      "name": "CMBT",
+      "color": "#f4b63d",
+      "x": 820,
+      "y": 620,
+      "width": 300,
+      "height": 220,
+      "floors": 2
+    }
+  ]
+}

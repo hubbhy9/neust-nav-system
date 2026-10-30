@@ -1,0 +1,63 @@
+{
+  "/capston/api": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/capston/api": "/checking/api"
+    }
+  },
+  "/caps/api": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": false
+  },
+  "/caps/functions/forgot_password.php": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/capston/map.php": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/capston/map-editor/map.php": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/capston/map-editor": "/checking/map-editor"
+    }
+  },
+  "/checking/map.php": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/checking/map-editor/map.php": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/capston/map.css": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/capston/map.js": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/capston/poi-search.js": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/capston/crud/create/register.php": {
+    "target": "http://127.0.0.1",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

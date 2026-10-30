@@ -1,0 +1,23 @@
+<app-account-header title="Campus Map"></app-account-header>
+
+<ion-content class="map-page">
+  <div class="map-embed-shell" [class.is-landscape-mode]="isLandscapeMode">
+    <button
+      type="button"
+      class="landscape-mode-button"
+      [attr.aria-label]="isLandscapeMode ? 'Exit landscape mode' : 'Open map in landscape mode'"
+      [attr.title]="isLandscapeMode ? 'Exit landscape mode' : 'Open map in landscape mode'"
+      [attr.aria-pressed]="isLandscapeMode"
+      (click)="toggleLandscapeMode()"
+    >
+      <ion-icon [name]="isLandscapeMode ? 'contract-outline' : 'expand-outline'" aria-hidden="true"></ion-icon>
+    </button>
+    <iframe
+      #mapFrame
+      title="NEUST campus navigation map"
+      [src]="mapUrl"
+      referrerpolicy="no-referrer-when-downgrade"
+      (load)="onMapLoad()"
+    ></iframe>
+  </div>
+</ion-content>
